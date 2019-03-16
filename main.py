@@ -14,12 +14,7 @@ from pygame.locals import *
 def initalize_display(argv):
     pygame.init()
     pygame.display.set_caption('Rainbow Trap')
-    if len(sys.argv) == 3:
-        pygame.display.set_mode((int(argv[1]), int(argv[2])))
-    elif len(sys.argv) == 2:
-        pygame.display.set_mode((int(argv[1]), int(argv[1])))
-    else:
-        pygame.display.set_mode((1024, 720))
+    pygame.display.set_mode((1024, 720))
 
 
 # Main game flow
