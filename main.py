@@ -20,44 +20,48 @@ STAY = 0
 RIGHT = 1
 LEFT = 2
 
+
 # Initialize game display
 def initalize_display(argv):
     pygame.init()
     screen = pygame.display.set_mode((1000, 700))
     pygame.display.set_caption('Rainbow Trap')
+
     return screen
+
 
 # Class for Main Character
 class Kiko:
-    def __init__(self,size,color):
+    def __init__(self, size, color):
         self.color = color
         self.size = size
-        self.skin = pygame.Surface((size,size))
-        self.pos = (495,50)
+        self.skin = pygame.Surface((size, size))
+        self.pos = (495, 50)
         self.move = STAY
         self.skin.fill(self.color)
 
-    def change_dir(self,dir):
+    def change_dir(self, dir):
         self.move = dir
 
     def moving(self):
         if self.move == RIGHT:
             if (self.pos[0]+2*self.size <= 1000):
-                self.pos = (self.pos[0]+self.size,50)
+                self.pos = (self.pos[0]+self.size, 50)
         if self.move == LEFT:
             if (self.pos[0]-self.size >= 0):
-                self.pos = (self.pos[0]-self.size,50)
-    
-    def change_color(self,color):
+                self.pos = (self.pos[0]-self.size, 50)
+               
+    def change_color(self, color):
         self.color = color
         self.skin.fill(self.color)
+
 
 # Main game flow
 def main(argv):
     screen = initalize_display(argv)
 
     clock = pygame.time.Clock()
-    kiko = Kiko(10,RED)
+    kiko = Kiko(10, RED)
 
     while True:
         clock.tick(50)
@@ -79,13 +83,13 @@ def main(argv):
                 if event.key == K_w:
                     kiko.change_color(YELLOW)
             if event.type == KEYUP:
-                if event.key in [K_RIGHT,K_LEFT]:
+                if event.key in [K_RIGHT, K_LEFT]:
                     kiko.change_dir(STAY)
 
         kiko.moving()
 
-        screen.fill((0,0,0))
-        screen.blit(kiko.skin,kiko.pos)
+        screen.fill((0, 0, 0))
+        screen.blit(kiko.skin, kiko.pos)
 
         # Update the display
         pygame.display.update()
