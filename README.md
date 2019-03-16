@@ -1,4 +1,4 @@
-# Rainbow Trap
+# :rainbow: Rainbow Trap
 
 Rainbow Trap is a simple game made with :heart: and :coffee: by undergrad students from Instituto Tecnológico de Aeronáutica in Brazil.
 
