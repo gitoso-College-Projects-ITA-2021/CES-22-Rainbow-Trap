@@ -10,10 +10,10 @@ import sys
 from pygame.locals import *
 
 # Define colors
-RED = (255,0,0)
-GREEN = (0,255,0)
-BLUE = (0,0,225)
-YELLOW = (255,255,0)
+RED = (255, 0, 0)
+GREEN = (0, 255, 0)
+BLUE = (0, 0, 225)
+YELLOW = (255, 255, 0)
 
 # Define directions
 STAY = 0
@@ -83,8 +83,16 @@ def main(argv):
                 if event.key == K_w:
                     kiko.change_color(YELLOW)
             if event.type == KEYUP:
-                if event.key in [K_RIGHT, K_LEFT]:
-                    kiko.change_dir(STAY)
+                if event.key == K_RIGHT and kiko.move == RIGHT:
+                    if pygame.key.get_pressed()[K_LEFT]:
+                        kiko.change_dir(LEFT)
+                    else:
+                        kiko.change_dir(STAY)
+                if event.key == K_LEFT and kiko.move == LEFT:
+                    if pygame.key.get_pressed()[K_RIGHT]:
+                        kiko.change_dir(RIGHT)
+                    else:
+                        kiko.change_dir(STAY)
 
         kiko.moving()
 
