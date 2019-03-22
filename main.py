@@ -12,8 +12,12 @@ from pygame.locals import *
 # Define colors
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
-BLUE = (0, 0, 225)
+BLUE = (127, 255, 212)
 YELLOW = (255, 255, 0)
+ORANGE = (255, 140, 0)
+INDIGO = (0, 0, 128)
+VIOLET = (238, 130, 238)
+WHITE = (255, 255, 255)
 
 # Define directions
 STAY = 0
@@ -50,7 +54,27 @@ class Kiko:
         if self.move == LEFT:
             if (self.pos[0]-self.size >= 0):
                 self.pos = (self.pos[0]-self.size, 50)
-               
+
+    def choose_color(self):
+        if pygame.key.get_pressed()[K_a]:
+            if pygame.key.get_pressed()[K_w]:
+                self.change_color(VIOLET)
+            elif pygame.key.get_pressed()[K_s]:
+                self.change_color(INDIGO)
+            else: 
+                self.change_color(BLUE)
+        elif pygame.key.get_pressed()[K_d]:
+            if pygame.key.get_pressed()[K_w]:
+                self.change_color(ORANGE)
+            elif pygame.key.get_pressed()[K_s]:
+                self.change_color(WHITE)
+            else: 
+                self.change_color(RED)
+        elif pygame.key.get_pressed()[K_w]:
+            self.change_color(YELLOW)
+        else: 
+            self.change_color(GREEN)
+
     def change_color(self, color):
         self.color = color
         self.skin.fill(self.color)
@@ -74,14 +98,8 @@ def main(argv):
                     kiko.change_dir(LEFT)
                 elif event.key == K_RIGHT:
                     kiko.change_dir(RIGHT)
-                if event.key == K_a:
-                    kiko.change_color(RED)
-                if event.key == K_s:
-                    kiko.change_color(GREEN)
-                if event.key == K_d:
-                    kiko.change_color(BLUE)
-                if event.key == K_w:
-                    kiko.change_color(YELLOW)
+                if event.key in [K_a, K_w, K_s, K_d]:
+                    kiko.choose_color()
             if event.type == KEYUP:
                 if event.key == K_RIGHT and kiko.move == RIGHT:
                     if pygame.key.get_pressed()[K_LEFT]:
