@@ -30,6 +30,30 @@ def initalize_display(argv):
     return screen
 
 
+# Class for Maze generation
+class Maze:
+    def __init__():
+        print('')
+
+
+# Class for Temporary grid used to generate maze before showing in the screen
+class TempBlock:
+    def __init__():
+        print('')
+
+
+# Class for each maze cell used to generate the maze
+class MazeCell:
+    def __init__():
+        print('')
+
+
+# Class for pool of possible objects to be inserted in the maze
+class Pool:
+    def __init__():
+        print('')
+
+
 # Class for Main Character
 class Kiko:
     def __init__(self, size, color):
