@@ -9,8 +9,16 @@ import os
 import sys
 from pygame.locals import *
 
-# Game config
-from config import *
+# Define colors
+RED = (255, 0, 0)
+GREEN = (0, 255, 0)
+BLUE = (0, 0, 225)
+YELLOW = (255, 255, 0)
+
+# Define directions
+STAY = 0
+RIGHT = 1
+LEFT = 2
 
 
 # Initialize game display
@@ -42,17 +50,10 @@ class Kiko:
         if self.move == LEFT:
             if (self.pos[0]-self.size >= 0):
                 self.pos = (self.pos[0]-self.size, 50)
-            
+               
     def change_color(self, color):
         self.color = color
         self.skin.fill(self.color)
-
-
-# Class for the maze
-class Maze:
-    def __init__():
-        self.pos = ()
-        print('oi')
 
 
 # Main game flow
