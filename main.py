@@ -9,21 +9,6 @@ import os
 import sys
 from pygame.locals import *
 
-# Define colors
-RED = (255, 0, 0)
-GREEN = (0, 255, 0)
-BLUE = (127, 255, 212)
-YELLOW = (255, 255, 0)
-ORANGE = (255, 140, 0)
-INDIGO = (0, 0, 128)
-VIOLET = (238, 130, 238)
-WHITE = (255, 255, 255)
-
-# Define directions
-STAY = 0
-RIGHT = 1
-LEFT = 2
-
 
 # Initialize game display
 def initalize_display(argv):
@@ -92,7 +77,7 @@ class Kiko:
                 self.change_color(ORANGE)
             elif pygame.key.get_pressed()[K_s]:
                 self.change_color(WHITE)
-            else: 
+            else:
                 self.change_color(RED)
         elif pygame.key.get_pressed()[K_w]:
             self.change_color(YELLOW)
