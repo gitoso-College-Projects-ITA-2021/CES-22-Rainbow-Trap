@@ -40,8 +40,8 @@ class TempBlock:
         obstacles_count = 0
 
         while invalid_count < 10 and obstacles_count < 3:
-            x = randint(1, self.x_length - 1)
-            y = randint(1, self.y_length - 1)
+            x = randint(0, self.x_length - 1)
+            y = randint(0, self.y_length - 1)
 
             if grid[x][y] and grid[x][y].cell_state == AVAIABLE:
                 obstacle = self.pool.get_obstacle()
@@ -66,15 +66,26 @@ class TempBlock:
             element.cell_state = INVALID
         return grid
 
+    def empty_grid(self):
+        # Empty and avaiable grid
+        grid = []
+        for i in range(self.y_length):
+            grid_line = []
+            for j in range(self.x_length):
+                cell = MazeCell()
+                grid_line.append(cell)
+            grid.append(grid_line)
+        return grid
+
     def renew_grid(self):
         self.grid = self.new_grid()
 
     def get_line(self):
         if self.grid:
-            return self.grid.pop()
+            return self.grid.pop(0)
         else:
             self.grid = self.new_grid()
-            return self.grid.pop()
+            return self.grid.pop(0)
 
     def get_grid(self):
         if self.grid:
@@ -82,6 +93,23 @@ class TempBlock:
         else:
             self.grid = self.new_grid()
             return self.grid
+
+    def get_empty_grid(self):
+        self.grid = self.empty_grid()
+        return self.grid
+
+    def convert_to_full_grid(self, line):
+        full_grid = []
+        for i in range(self.cell_size):
+            full_grid.append(line)
+        return full_grid
+
+    def pop_first_full_grid(self):
+        temp_line = self.get_line()
+        full_grid = []
+        for i in range(self.cell_size):
+            full_grid.append(temp_line)
+        return full_grid
 
 
 # Class for each maze cell used to generate the maze
