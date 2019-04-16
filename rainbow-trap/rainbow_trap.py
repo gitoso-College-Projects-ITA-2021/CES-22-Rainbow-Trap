@@ -37,6 +37,7 @@ def main(argv):
     maze = TempBlock(SCREEN_LENGTH // grid_x, grid_x, grid_y)
     grid = maze.get_grid()
     maze.renew_grid()
+    continue_game = True
 
     while True:
         time = time + clock.tick(50)
@@ -66,7 +67,7 @@ def main(argv):
         kiko.moving()
 
         screen.fill((0, 0, 0))
-        screen.blit(kiko.skin, kiko.pos)
+        screen.blit(kiko.image, kiko.pos)
         if not grid:
             grid = maze.get_grid()
         count_y = 0
