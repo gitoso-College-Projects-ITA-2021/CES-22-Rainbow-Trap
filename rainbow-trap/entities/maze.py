@@ -7,7 +7,7 @@ from random import randint
 from config import *
 
 # Import classes
-from pool import Pool
+from entities.pool import Pool
 
 
 # Class for Maze generation
