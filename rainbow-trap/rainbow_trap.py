@@ -28,6 +28,7 @@ def initalize_display(argv):
 
 # Main game flow
 def main(argv):
+    # Game initalization
     screen = initalize_display(argv)
     time = 0
     clock = pygame.time.Clock()
@@ -38,12 +39,15 @@ def main(argv):
     grid = maze.get_grid()
     maze.renew_grid()
 
+    # Main loop
     while True:
         time = time + clock.tick(50)
-        # If user closes the window, quit the game
+        # Event handling
         for event in pygame.event.get():
+            # Event: Quit Game
             if event.type == QUIT:
                 pygame.quit()
+            # Event: Key pressed
             if event.type == KEYDOWN:
                 if event.key == K_LEFT:
                     kiko.change_dir(LEFT)
@@ -51,6 +55,7 @@ def main(argv):
                     kiko.change_dir(RIGHT)
                 if event.key in [K_a, K_w, K_s, K_d]:
                     kiko.choose_color()
+            # Event: Key rekeased
             if event.type == KEYUP:
                 if event.key == K_RIGHT and kiko.move == RIGHT:
                     if pygame.key.get_pressed()[K_LEFT]:
@@ -63,8 +68,10 @@ def main(argv):
                     else:
                         kiko.change_dir(STAY)
 
+        # Move the player
         kiko.moving()
 
+        # Update and move the maze
         screen.fill((0, 0, 0))
         screen.blit(kiko.skin, kiko.pos)
         if not grid:
