@@ -93,7 +93,7 @@ def main(argv):
             count_x = 0
             for cell in line:
                 maze_skin = pygame.Surface((maze.cell_size, 1))
-                maze_skin.fill(GREEN)
+                maze_skin.fill(WHITE)
                 if cell.cell_state == WALL:
                     screen.blit(maze_skin, (count_x, count_y))
                 count_x = count_x + maze.cell_size
