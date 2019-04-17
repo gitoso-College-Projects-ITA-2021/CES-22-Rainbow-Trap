@@ -24,10 +24,10 @@ class Kiko(pygame.sprite.Sprite):
     def moving(self):
         if self.move == RIGHT:
             if (self.pos[0]+2*self.size <= SCREEN_WIDTH):
-                self.pos = (self.pos[0]+self.size, INITIAL_Y)
+                self.pos = (self.pos[0] + KIKO_SPEED, INITIAL_Y)
         if self.move == LEFT:
             if (self.pos[0]-self.size >= 0):
-                self.pos = (self.pos[0]-self.size, INITIAL_Y)
+                self.pos = (self.pos[0] - KIKO_SPEED, INITIAL_Y)
 
     def choose_color(self):
         if pygame.key.get_pressed()[K_a]:
