@@ -21,7 +21,7 @@ class Kiko:
 
     def moving(self):
         if self.move == RIGHT:
-            if (self.pos[0]+2*self.size <= SCREEN_WIDTH):
+            if (self.pos[0]+2*self.size <= SCREEN_SIZE):
                 self.pos = (self.pos[0] + KIKO_SPEED, INITIAL_Y)
         if self.move == LEFT:
             if (self.pos[0]-self.size >= 0):
@@ -50,3 +50,6 @@ class Kiko:
     def change_color(self, color):
         self.color = color
         self.skin.fill(self.color)
+
+    def get_corners(self):
+        return [self.pos, (self.pos[0] + self.size, self.pos[1]), (self.pos[0], self.pos[1] + self.size), (self.pos[0] + self.size, self.pos[1] + self.size)]

@@ -19,7 +19,7 @@ from entities.maze import *
 def initalize_display(argv):
     pygame.init()
     flags = DOUBLEBUF # (Enhance performance)
-    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_LENGTH), flags)
+    screen = pygame.display.set_mode((SCREEN_SIZE, SCREEN_SIZE), flags)
     screen.set_alpha(None) # (Enhance performance)
     pygame.display.set_caption('Rainbow Trap')
  
@@ -32,10 +32,11 @@ def main(argv):
     pygame.event.set_allowed([QUIT, KEYDOWN, KEYUP])
     clock = pygame.time.Clock()
     kiko = Kiko(PLAYER_SIZE, RED)
-    grid_x = SCREEN_WIDTH // FAT_X
-    grid_y = SCREEN_LENGTH // FAT_Y
-    maze = TempBlock(SCREEN_LENGTH // grid_x, grid_x, grid_y)
+    grid_x = SCREEN_SIZE // SCALE_FACTOR
+    grid_y = SCREEN_SIZE // SCALE_FACTOR
+    maze = TempBlock(SCREEN_SIZE // grid_x, grid_x, grid_y)
     grid = maze.empty_grid()
+    #grid = maze.new_grid()
     first_grid_line = ''
     maze.renew_grid()
 
@@ -93,7 +94,7 @@ def main(argv):
             count_x = 0
             for cell in line:
                 maze_skin = pygame.Surface((maze.cell_size, 1))
-                maze_skin.fill(WHITE)
+                maze_skin.fill(RED)
                 if cell.cell_state == WALL:
                     screen.blit(maze_skin, (count_x, count_y))
                 count_x = count_x + maze.cell_size
@@ -117,6 +118,14 @@ def main(argv):
         
         ## Update the display
         pygame.display.update()
+
+        ## Check if kiko did collide with maze walls
+        for corner in kiko.get_corners():
+            if(screen.get_at(corner) == WHITE):
+                ## Event to be called (game over)
+                pygame.quit()
+
+
 
 # Calls main function if executed as a script
 if __name__ == '__main__':
