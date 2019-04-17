@@ -18,11 +18,11 @@ from entities.maze import *
 # Initialize game display
 def initalize_display(argv):
     pygame.init()
-    flags = DOUBLEBUF # (Enhance performance)
+    flags = DOUBLEBUF  # (Enhance performance)
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_LENGTH), flags)
     screen.set_alpha(None) # (Enhance performance)
     pygame.display.set_caption('Rainbow Trap')
- 
+
     return screen
 
 # Main game flow
@@ -78,14 +78,9 @@ def main(argv):
 
         # Clear the screen
         screen.fill((0, 0, 0))
-<<<<<<< HEAD
-        screen.blit(kiko.image, kiko.pos)
-        if not grid:
-            grid = maze.get_grid()
-=======
 
         # Add kiko to the screen
-        screen.blit(kiko.skin, kiko.pos)
+        screen.blit(kiko.image, kiko.pos)
 
         # Renew top lines if needed
         if not first_grid_line:
@@ -94,7 +89,6 @@ def main(argv):
             grid.append(maze.get_line())
 
         # Draw top lines of the maze
->>>>>>> b280c5f71cac100c6ad57d8264582f1ab597fdcc
         count_y = 0
         for line in first_grid_line:
             count_x = 0
