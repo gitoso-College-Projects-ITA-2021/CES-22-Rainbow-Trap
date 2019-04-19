@@ -20,14 +20,38 @@ def initalize_display(argv):
     pygame.init()
     flags = DOUBLEBUF  # (Enhance performance)
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_LENGTH), flags)
-    screen.set_alpha(None) # (Enhance performance)
+    screen.set_alpha(None)  # (Enhance performance)
     pygame.display.set_caption('Rainbow Trap')
 
     return screen
 
+
+def game_intro(screen):
+
+    intro = True
+
+    while intro:
+
+        myfont = pygame.font.SysFont('Britannic Bold', 150)
+        myfont2 = pygame.font.SysFont('Comic Sans', 50)
+        RT = myfont.render('Rainbow Trap', False, WHITE)
+        PS = myfont2.render('Pres Enter', False, WHITE)
+        screen.blit(RT, (200, SCREEN_WIDTH // 2 - 100 ))
+        screen.blit(PS, (200, SCREEN_WIDTH // 2 + 100 ))
+        pygame.display.update()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+            if event.type == KEYDOWN:
+                if event.key == K_RETURN:
+                    intro = False
+
+
 # Main game flow
 def main(argv):
-    ## Game initalization
+    # Game initalization
     screen = initalize_display(argv)
     pygame.event.set_allowed([QUIT, KEYDOWN, KEYUP])
     clock = pygame.time.Clock()
@@ -40,12 +64,15 @@ def main(argv):
     maze.renew_grid()
     continue_game = True
 
-    ## Main loop
+    # Runs the intro
+    game_intro(screen)
+
+    # Main loop
     while True:
-        ## Sets FPS to 60
+        # Sets FPS to 60
         clock.tick(60)
 
-        ## Event handling
+        # Event handling
         for event in pygame.event.get():
             # Event: Quit Game
             if event.type == QUIT:
@@ -71,10 +98,10 @@ def main(argv):
                     else:
                         kiko.change_dir(STAY)
 
-        ## Move the player
+        # Move the player
         kiko.moving()
 
-        ## Update and move the maze
+        # Update and move the maze
 
         # Clear the screen
         screen.fill((0, 0, 0))
@@ -99,7 +126,7 @@ def main(argv):
                     screen.blit(maze_skin, (count_x, count_y))
                 count_x = count_x + maze.cell_size
             count_y = count_y + 1
-        
+
         # Draw the rest of the maze
         for line in grid:
             count_x = 0
@@ -115,8 +142,8 @@ def main(argv):
         for i in range(MAZE_SPEED):
             if(first_grid_line):
                 first_grid_line.pop(0)
-        
-        ## Update the display
+
+        # Update the display
         pygame.display.update()
 
 # Calls main function if executed as a script
