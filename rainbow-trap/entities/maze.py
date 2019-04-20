@@ -58,12 +58,32 @@ class Maze:
                 invalid_count = invalid_count + 1
 
         # Select correct sprites for each wall
-        for i in range(self.y_length):
-            for j in range(self.x_length):
-                if grid[i][j].state == WALL:
-                    if grid[i][j - 1].state != WALL:
-                        grid[i][j].toso = 1
+        for i in range(1, self.y_length - 1):
+            for j in range(1, self.x_length - 1):
+                    if grid[i][j].state == WALL:
+                        # TOP
+                        if grid[i - 1][j].state == WALL:
+                            grid[i][j].neighbors[0] = 'W'
+                        else:
+                            grid[i][j].neighbors[0] = 'X'
 
+                        # RIGHT
+                        if grid[i][j + 1].state == WALL:
+                            grid[i][j].neighbors[1] = 'W'
+                        else:
+                            grid[i][j].neighbors[1] = 'X'
+
+                        # BOTTOM
+                        if grid[i + 1][j].state == WALL:
+                            grid[i][j].neighbors[2] = 'W'
+                        else:
+                            grid[i][j].neighbors[2] = 'X'
+
+                        # LEFT
+                        if grid[i][j - 1].state == WALL:
+                            grid[i][j].neighbors[3] = 'W'
+                        else:
+                            grid[i][j].neighbors[3] = 'X'
 
         # Fill last line with blank
         for element in grid[-1]:
@@ -134,4 +154,4 @@ class MazeCell:
     def __init__(self):
         self.state = AVAIABLE
         self.color = BLACK
-        self.toso = 0
+        self.neighbors = ['X', 'X', 'X', 'X']  # W = WALL | X = NOT WALL | Order: Top, Right, Bottom, Left
