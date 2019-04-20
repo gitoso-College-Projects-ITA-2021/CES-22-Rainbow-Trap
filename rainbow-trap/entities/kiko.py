@@ -15,6 +15,7 @@ class Kiko:
         self.pos = (INITIAL_X, INITIAL_Y)
         self.move = STAY
         self.skin.fill(self.color)
+        self.rect = pygame.Rect(self.pos, (self.size, self.size))
 
     def change_dir(self, dir):
         self.move = dir
@@ -26,6 +27,7 @@ class Kiko:
         if self.move == LEFT:
             if (self.pos[0]-self.size >= 0):
                 self.pos = (self.pos[0] - KIKO_SPEED, INITIAL_Y)
+        self.rect = pygame.Rect(self.pos, (self.size, self.size))
 
     def choose_color(self):
         if pygame.key.get_pressed()[K_a]:

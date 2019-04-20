@@ -18,16 +18,17 @@ from entities.maze import *
 # Initialize game display
 def initalize_display(argv):
     pygame.init()
-    flags = DOUBLEBUF # (Enhance performance)
+    flags = DOUBLEBUF  # (Enhance performance)
     screen = pygame.display.set_mode((SCREEN_SIZE, SCREEN_SIZE), flags)
-    screen.set_alpha(None) # (Enhance performance)
+    screen.set_alpha(None)  # (Enhance performance)
     pygame.display.set_caption('Rainbow Trap')
- 
+
     return screen
+
 
 # Main game flow
 def main(argv):
-    ## Game initalization
+    # Game initalization
     screen = initalize_display(argv)
     pygame.event.set_allowed([QUIT, KEYDOWN, KEYUP])
     clock = pygame.time.Clock()
@@ -36,21 +37,20 @@ def main(argv):
     grid_y = SCREEN_SIZE // SCALE_FACTOR
     maze = TempBlock(SCREEN_SIZE // grid_x, grid_x, grid_y)
     grid = maze.empty_grid()
-    #grid = maze.new_grid()
     first_grid_line = ''
     maze.renew_grid()
 
-    ## Main loop
+    # Main loop
     while True:
-        ## Sets FPS to 60
+        # Sets FPS to 60
         clock.tick(60)
 
-        ## Event handling
+        # Event handling
         for event in pygame.event.get():
             # Event: Quit Game
             if event.type == QUIT:
                 pygame.quit()
-            # Event: Key pressed
+            # Event: Key pressed>
             if event.type == KEYDOWN:
                 if event.key == K_LEFT:
                     kiko.change_dir(LEFT)
@@ -71,10 +71,10 @@ def main(argv):
                     else:
                         kiko.change_dir(STAY)
 
-        ## Move the player
+        # Move the player
         kiko.moving()
 
-        ## Update and move the maze
+        # Update and move the maze
 
         # Clear the screen
         screen.fill((0, 0, 0))
@@ -99,7 +99,10 @@ def main(argv):
                     screen.blit(maze_skin, (count_x, count_y))
                 count_x = count_x + maze.cell_size
             count_y = count_y + 1
-        
+
+        # Array that saves maze walls (for collision purposes)
+        walls = []
+
         # Draw the rest of the maze
         for line in grid:
             count_x = 0
@@ -107,24 +110,23 @@ def main(argv):
                 maze_skin = pygame.Surface((maze.cell_size, maze.cell_size))
                 maze_skin.fill(WHITE)
                 if cell.cell_state == WALL:
+                    walls.append(pygame.Rect(((count_x, count_y)), (maze.cell_size, maze.cell_size)))
                     screen.blit(maze_skin, (count_x, count_y))
                 count_x = count_x + maze.cell_size
             count_y = count_y + maze.cell_size
 
         # Move the labyrinth up (remove first lines and repeat loop)
         for i in range(MAZE_SPEED):
-            if(first_grid_line):
+            if first_grid_line:
                 first_grid_line.pop(0)
-        
-        ## Update the display
+
+        # Update the display
         pygame.display.update()
 
-        ## Check if kiko did collide with maze walls
-        for corner in kiko.get_corners():
-            if(screen.get_at(corner) == WHITE):
-                ## Event to be called (game over)
+        # Check if kiko did collide with maze walls
+        for wall in walls:
+            if kiko.rect.colliderect(wall):
                 pygame.quit()
-
 
 
 # Calls main function if executed as a script
