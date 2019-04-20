@@ -51,7 +51,7 @@ def main(argv):
             # Event: Quit Game
             if event.type == QUIT:
                 pygame.quit()
-            # Event: Key pressed>
+            # Event: Key pressed
             if event.type == KEYDOWN:
                 if event.key == K_LEFT:
                     kiko.change_dir(LEFT)
