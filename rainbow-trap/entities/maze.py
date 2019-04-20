@@ -57,6 +57,14 @@ class Maze:
             else:
                 invalid_count = invalid_count + 1
 
+        # Select correct sprites for each wall
+        for i in range(self.y_length):
+            for j in range(self.x_length):
+                if grid[i][j].state == WALL:
+                    if grid[i][j - 1].state != WALL:
+                        grid[i][j].toso = 1
+
+
         # Fill last line with blank
         for element in grid[-1]:
             element.state = INVALID
@@ -126,3 +134,4 @@ class MazeCell:
     def __init__(self):
         self.state = AVAIABLE
         self.color = BLACK
+        self.toso = 0

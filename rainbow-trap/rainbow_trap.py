@@ -113,11 +113,17 @@ def main(argv):
                 # If maze wall
                 if cell.state == WALL:
                     walls.append(pygame.Rect(((count_x, count_y)), (maze.cell_size, maze.cell_size)))
-                    screen.blit(maze_skin, (count_x, count_y))
+                    image = ''
+                    if cell.toso == 1:
+                        image = pygame.image.load('images/1.png')
+                    else:
+                        image = pygame.image.load('images/lab_wall.png')
+                    screen.blit(image, (count_x, count_y))
                 # If maze empty space
                 else:
                     maze_skin = pygame.Surface((maze.cell_size, maze.cell_size))
                     maze_skin.fill(cell.color)
+
                     # If same color as player
                     if cell.color == kiko.color:
                         walls.append(pygame.Rect(((count_x, count_y)), (maze.cell_size, maze.cell_size)))
