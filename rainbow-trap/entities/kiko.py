@@ -52,6 +52,3 @@ class Kiko:
     def change_color(self, color):
         self.color = color
         self.skin.fill(self.color)
-
-    def get_corners(self):
-        return [self.pos, (self.pos[0] + self.size, self.pos[1]), (self.pos[0], self.pos[1] + self.size), (self.pos[0] + self.size, self.pos[1] + self.size)]

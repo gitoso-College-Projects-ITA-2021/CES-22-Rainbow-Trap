@@ -29,13 +29,14 @@ def initalize_display(argv):
 # Main game flow
 def main(argv):
     # Game initalization
+    pygame.init()
     screen = initalize_display(argv)
     pygame.event.set_allowed([QUIT, KEYDOWN, KEYUP])
     clock = pygame.time.Clock()
     kiko = Kiko(PLAYER_SIZE, RED)
     grid_x = SCREEN_SIZE // SCALE_FACTOR
     grid_y = SCREEN_SIZE // SCALE_FACTOR
-    maze = TempBlock(SCREEN_SIZE // grid_x, grid_x, grid_y)
+    maze = Maze(SCREEN_SIZE // grid_x, grid_x, grid_y)
     grid = maze.empty_grid()
     first_grid_line = ''
     maze.renew_grid()
@@ -88,14 +89,14 @@ def main(argv):
             grid.pop(0)
             grid.append(maze.get_line())
 
-        # Draw top lines of the maze
-        count_y = 0
+        # Draw top lines of the maze (out of screen)
+        count_y = -maze.cell_size
         for line in first_grid_line:
             count_x = 0
             for cell in line:
                 maze_skin = pygame.Surface((maze.cell_size, 1))
                 maze_skin.fill(RED)
-                if cell.cell_state == WALL:
+                if cell.state == WALL:
                     screen.blit(maze_skin, (count_x, count_y))
                 count_x = count_x + maze.cell_size
             count_y = count_y + 1
@@ -103,14 +104,26 @@ def main(argv):
         # Array that saves maze walls (for collision purposes)
         walls = []
 
-        # Draw the rest of the maze
+        # Draw the rest of the maze (now count_y = 0)
         for line in grid:
             count_x = 0
             for cell in line:
                 maze_skin = pygame.Surface((maze.cell_size, maze.cell_size))
                 maze_skin.fill(WHITE)
-                if cell.cell_state == WALL:
+                # If maze wall
+                if cell.state == WALL:
                     walls.append(pygame.Rect(((count_x, count_y)), (maze.cell_size, maze.cell_size)))
+                    screen.blit(maze_skin, (count_x, count_y))
+                # If maze empty space
+                else:
+                    maze_skin = pygame.Surface((maze.cell_size, maze.cell_size))
+                    maze_skin.fill(cell.color)
+                    # If same color as player
+                    if cell.color == kiko.color:
+                        walls.append(pygame.Rect(((count_x, count_y)), (maze.cell_size, maze.cell_size)))
+                        maze_skin.set_alpha(255)
+                    else:
+                        maze_skin.set_alpha(30)
                     screen.blit(maze_skin, (count_x, count_y))
                 count_x = count_x + maze.cell_size
             count_y = count_y + maze.cell_size

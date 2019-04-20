@@ -9,15 +9,11 @@ from config import *
 # Import classes
 from entities.pool import Pool
 
+colors = [RED, GREEN, BLUE, YELLOW]
+
 
 # Class for Maze generation
 class Maze:
-    def __init__(self, x_length, y_length):
-        print('WIP')
-
-
-# Class for Temporary grid used to generate maze before showing in the screen
-class TempBlock:
     def __init__(self, cell_size, x_length, y_length):
         self.cell_size = cell_size
         self.x_length = x_length
@@ -43,7 +39,7 @@ class TempBlock:
             x = randint(0, self.x_length - 1)
             y = randint(0, self.y_length - 1)
 
-            if grid[x][y] and grid[x][y].cell_state == AVAIABLE:
+            if grid[x][y] and grid[x][y].state == AVAIABLE:
                 obstacle = self.pool.get_obstacle()
                 x = x - 1
                 y = y - 1
@@ -54,8 +50,8 @@ class TempBlock:
                     for element in line:
                         if 0 <= x + i < len(grid):
                             if 0 <= y + j < len(grid[x + i]):
-                                if grid[x + i][y + j].cell_state != INVALID:
-                                    grid[x + i][y + j].cell_state = element
+                                if grid[x + i][y + j].state != INVALID:
+                                    grid[x + i][y + j].state = element
                         j = j + 1
                     i = i + 1
             else:
@@ -63,7 +59,20 @@ class TempBlock:
 
         # Fill last line with blank
         for element in grid[-1]:
-            element.cell_state = INVALID
+            element.state = INVALID
+
+        # Colors rest of the grid
+        count = 0
+        color = colors[randint(0, len(colors) - 1)]
+        for line in grid:
+            if count > COLOR_LINE_SIZE:
+                color = colors[randint(0, len(colors) - 1)]
+                count = 0
+            for element in line:
+                element.color = color
+            count = count + 1
+
+        # Return the grid
         return grid
 
     def empty_grid(self):
@@ -115,4 +124,5 @@ class TempBlock:
 # Class for each maze cell used to generate the maze
 class MazeCell:
     def __init__(self):
-        self.cell_state = AVAIABLE
+        self.state = AVAIABLE
+        self.color = BLACK
