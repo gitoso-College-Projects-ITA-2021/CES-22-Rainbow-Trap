@@ -35,12 +35,13 @@ class Maze:
         invalid_count = 0
         obstacles_count = 0
 
-        while invalid_count < 10 and obstacles_count < 3:
+        while invalid_count < 500 and obstacles_count < 100:
             x = randint(0, self.x_length - 1)
             y = randint(0, self.y_length - 1)
 
             if grid[x][y] and grid[x][y].state == AVAIABLE:
                 obstacle = self.pool.get_obstacle()
+                color = colors[randint(0, len(colors) - 1)]
                 x = x - 1
                 y = y - 1
 
@@ -52,6 +53,7 @@ class Maze:
                             if 0 <= y + j < len(grid[x + i]):
                                 if grid[x + i][y + j].state != INVALID:
                                     grid[x + i][y + j].state = element
+                                    grid[x + i][y + j].color = color
                         j = j + 1
                     i = i + 1
             else:
@@ -93,16 +95,16 @@ class Maze:
         for element in grid[-1]:
             element.state = INVALID
 
-        # Colors rest of the grid
-        count = 0
-        color = colors[randint(0, len(colors) - 1)]
-        for line in grid:
-            if count > COLOR_LINE_SIZE:
-                color = colors[randint(0, len(colors) - 1)]
-                count = 0
-            for element in line:
-                element.color = color
-            count = count + 1
+        # # Colors rest of the grid
+        # count = 0
+        # color = colors[randint(0, len(colors) - 1)]
+        # for line in grid:
+        #     if count > COLOR_LINE_SIZE:
+        #         color = colors[randint(0, len(colors) - 1)]
+        #         count = 0
+        #     for element in line:
+        #         element.color = color
+        #     count = count + 1
 
         # Return the grid
         return grid
@@ -159,3 +161,15 @@ class MazeCell:
         self.state = AVAIABLE
         self.color = BLACK
         self.neighbors = ['X', 'X', 'X', 'X']  # W = WALL | X = NOT WALL | Order: Top, Right, Bottom, Left
+
+    def get_color_string(self):
+        if self.color == YELLOW:
+            return 'yellow'
+        elif self.color == RED:
+            return 'red'
+        elif self.color == GREEN:
+            return 'green'
+        elif self.color == BLUE:
+            return 'blue'
+        else:
+            return ''
