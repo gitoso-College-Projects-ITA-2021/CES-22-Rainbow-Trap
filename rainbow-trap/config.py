@@ -3,10 +3,10 @@ SCREEN_SIZE = 1000
 
 # Colors
 BLACK = (0, 0, 0)
-RED = (255, 0, 0)
-GREEN = (0, 255, 0)
-BLUE = (127, 255, 212)
-YELLOW = (255, 255, 0)
+RED = (238, 64, 53)
+GREEN = (118, 255, 3)
+BLUE = (24, 255, 255)
+YELLOW = (255, 235, 59)
 ORANGE = (255, 140, 0)
 INDIGO = (0, 0, 128)
 VIOLET = (238, 130, 238)

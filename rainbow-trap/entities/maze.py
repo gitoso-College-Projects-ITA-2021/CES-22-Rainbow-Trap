@@ -58,32 +58,36 @@ class Maze:
                 invalid_count = invalid_count + 1
 
         # Select correct sprites for each wall
-        for i in range(1, self.y_length - 1):
-            for j in range(1, self.x_length - 1):
+        for i in range(0, self.y_length):
+            for j in range(0, self.x_length):
                     if grid[i][j].state == WALL:
                         # TOP
-                        if grid[i - 1][j].state == WALL:
-                            grid[i][j].neighbors[0] = 'W'
-                        else:
-                            grid[i][j].neighbors[0] = 'X'
+                        if i - 1 >= 0:
+                            if grid[i - 1][j].state == WALL:
+                                grid[i][j].neighbors[0] = 'W'
+                            else:
+                                grid[i][j].neighbors[0] = 'X'
 
                         # RIGHT
-                        if grid[i][j + 1].state == WALL:
-                            grid[i][j].neighbors[1] = 'W'
-                        else:
-                            grid[i][j].neighbors[1] = 'X'
+                        if j + 1 <= self.x_length - 1:
+                            if grid[i][j + 1].state == WALL:
+                                grid[i][j].neighbors[1] = 'W'
+                            else:
+                                grid[i][j].neighbors[1] = 'X'
 
                         # BOTTOM
-                        if grid[i + 1][j].state == WALL:
-                            grid[i][j].neighbors[2] = 'W'
-                        else:
-                            grid[i][j].neighbors[2] = 'X'
+                        if i + 1 <= self.y_length - 1:
+                            if grid[i + 1][j].state == WALL:
+                                grid[i][j].neighbors[2] = 'W'
+                            else:
+                                grid[i][j].neighbors[2] = 'X'
 
                         # LEFT
-                        if grid[i][j - 1].state == WALL:
-                            grid[i][j].neighbors[3] = 'W'
-                        else:
-                            grid[i][j].neighbors[3] = 'X'
+                        if j - 1 >= 0:
+                            if grid[i][j - 1].state == WALL:
+                                grid[i][j].neighbors[3] = 'W'
+                            else:
+                                grid[i][j].neighbors[3] = 'X'
 
         # Fill last line with blank
         for element in grid[-1]:

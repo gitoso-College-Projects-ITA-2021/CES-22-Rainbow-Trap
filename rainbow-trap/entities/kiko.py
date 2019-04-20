@@ -52,3 +52,15 @@ class Kiko:
     def change_color(self, color):
         self.color = color
         self.skin.fill(self.color)
+
+    def get_color_string(self):
+        if self.color == YELLOW:
+            return 'yellow'
+        elif self.color == RED:
+            return 'red'
+        elif self.color == GREEN:
+            return 'green'
+        elif self.color == BLUE:
+            return 'blue'
+        else:
+            return ''
