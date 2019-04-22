@@ -7,11 +7,11 @@ from config import *
 
 
 # Class for Main Character
-class Kiko:
+class Kiko(pygame.sprite.Sprite):
     def __init__(self, size, color):
+        pygame.sprite.Sprite.__init__(self)
         self.color = color
         self.size = size
-        self.skin = pygame.Surface((size, size))
         self.pos = (INITIAL_X, INITIAL_Y)
         self.move = STAY
         self.skin.fill(self.color)
@@ -64,3 +64,37 @@ class Kiko:
             return 'blue'
         else:
             return ''
+'''
+        if self.color == RED:
+            self.image = pygame.image.load("images/kiko_red.png")
+            self.rect = self.image.get_rect() 
+            self.mask = pygame.mask.from_surface(self.image)
+        elif self.color == GREEN:
+            self.image = pygame.image.load("images/kiko_green.png")
+            self.rect = self.image.get_rect() 
+            self.mask = pygame.mask.from_surface(self.image)
+        elif self.color == YELLOW:
+            self.image = pygame.image.load("images/kiko_yellow.png")
+            self.rect = self.image.get_rect() 
+            self.mask = pygame.mask.from_surface(self.image)
+        elif self.color == BLUE:
+            self.image = pygame.image.load("images/kiko_blue.png")
+            self.rect = self.image.get_rect() 
+            self.mask = pygame.mask.from_surface(self.image)
+        elif self.color == INDIGO:
+            self.image = pygame.image.load("images/kiko_indigo.png")
+            self.rect = self.image.get_rect() 
+            self.mask = pygame.mask.from_surface(self.image)
+        elif self.color == VIOLET:
+            self.image = pygame.image.load("images/kiko_violet.png")
+            self.rect = self.image.get_rect() 
+            self.mask = pygame.mask.from_surface(self.image)
+        elif self.color == ORANGE:
+            self.image = pygame.image.load("images/kiko_orange.png")
+            self.rect = self.image.get_rect() 
+            self.mask = pygame.mask.from_surface(self.image)
+        else:
+            self.image = pygame.image.load("images/kiko_white.png")
+            self.rect = self.image.get_rect() 
+            self.mask = pygame.mask.from_surface(self.image)
+'''

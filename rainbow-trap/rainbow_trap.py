@@ -40,6 +40,7 @@ def main(argv):
     grid = maze.empty_grid()
     first_grid_line = ''
     maze.renew_grid()
+    continue_game = True
 
     # Main loop
     while True:
