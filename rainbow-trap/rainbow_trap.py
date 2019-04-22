@@ -19,7 +19,7 @@ from entities.maze import *
 def initalize_display(argv):
     pygame.init()
     flags = DOUBLEBUF  # (Enhance performance)
-    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_LENGTH), flags)
+    screen = pygame.display.set_mode((SCREEN_SIZE, SCREEN_SIZE), flags)
     screen.set_alpha(None)  # (Enhance performance)
     pygame.display.set_caption('Rainbow Trap')
 
@@ -32,12 +32,12 @@ def game_intro(screen):
 
     while intro:
 
-        myfont = pygame.font.SysFont('Britannic Bold', 150)
+        myfont = pygame.font.SysFont('Ubuntu Mono', 150)
         myfont2 = pygame.font.SysFont('Comic Sans', 50)
         RT = myfont.render('Rainbow Trap', False, WHITE)
-        PS = myfont2.render('Pres Enter', False, WHITE)
-        screen.blit(RT, (200, SCREEN_WIDTH // 2 - 100 ))
-        screen.blit(PS, (200, SCREEN_WIDTH // 2 + 100 ))
+        PS = myfont2.render('Press ENTER to play', False, WHITE)
+        screen.blit(RT, (200, SCREEN_SIZE // 2 - 100))
+        screen.blit(PS, (200, SCREEN_SIZE // 2 + 100))
         pygame.display.update()
 
         for event in pygame.event.get():
@@ -56,9 +56,9 @@ def main(argv):
     pygame.event.set_allowed([QUIT, KEYDOWN, KEYUP])
     clock = pygame.time.Clock()
     kiko = Kiko(PLAYER_SIZE, RED)
-    grid_x = SCREEN_WIDTH // FAT_X
-    grid_y = SCREEN_LENGTH // FAT_Y
-    maze = TempBlock(SCREEN_LENGTH // grid_x, grid_x, grid_y)
+    grid_x = SCREEN_SIZE // SCALE_FACTOR
+    grid_y = SCREEN_SIZE // SCALE_FACTOR
+    maze = Maze(SCREEN_SIZE // grid_x, grid_x, grid_y)
     grid = maze.empty_grid()
     first_grid_line = ''
     maze.renew_grid()
@@ -104,10 +104,7 @@ def main(argv):
         # Update and move the maze
 
         # Clear the screen
-        screen.fill((0, 0, 0))
-
-        # Add kiko to the screen
-        screen.blit(kiko.image, kiko.pos)
+        screen.fill(BLACK)
 
         # Renew top lines if needed
         if not first_grid_line:
@@ -115,36 +112,67 @@ def main(argv):
             grid.pop(0)
             grid.append(maze.get_line())
 
-        # Draw top lines of the maze
-        count_y = 0
+        # Draw top lines of the maze (out of screen)
+        count_y = -maze.cell_size
         for line in first_grid_line:
             count_x = 0
             for cell in line:
                 maze_skin = pygame.Surface((maze.cell_size, 1))
-                maze_skin.fill(WHITE)
-                if cell.cell_state == WALL:
+                maze_skin.fill(RED)
+                if cell.state == WALL:
                     screen.blit(maze_skin, (count_x, count_y))
                 count_x = count_x + maze.cell_size
             count_y = count_y + 1
 
-        # Draw the rest of the maze
+        # Array that saves maze walls (for collision purposes)
+        walls = []
+
+        # Draw the rest of the maze (now count_y = 0)
         for line in grid:
             count_x = 0
             for cell in line:
                 maze_skin = pygame.Surface((maze.cell_size, maze.cell_size))
-                maze_skin.fill(WHITE)
-                if cell.cell_state == WALL:
-                    screen.blit(maze_skin, (count_x, count_y))
+                maze_skin.fill(cell.color)
+                # # Fill maze with color
+                # if cell.color == kiko.color:
+                #     walls.append(pygame.Rect(((count_x, count_y)), (maze.cell_size, maze.cell_size)))
+                #     maze_skin.set_alpha(255)
+                # else:
+                #     maze_skin.set_alpha(50)
+                # screen.blit(maze_skin, (count_x, count_y))
+                # If maze wall fill with sprite
+                if cell.state == WALL:
+                    image_name = 'images/' + ''.join(cell.neighbors) + '_' + cell.get_color_string() + '.png'
+                    if os.path.isfile(image_name):
+                        image = pygame.image.load(image_name).convert_alpha()
+                    else:
+                        # Dummy image for things that are not done
+                        image = pygame.image.load('images/4.png').convert_alpha()
+
+                    if cell.color != kiko.color:
+                        walls.append(pygame.Rect(((count_x, count_y)), (maze.cell_size, maze.cell_size)))
+                    else:
+                        image.fill((255, 255, 255, WALL_OPACITY), None, pygame.BLEND_RGBA_MULT)
+                    screen.blit(image, (count_x, count_y))
                 count_x = count_x + maze.cell_size
             count_y = count_y + maze.cell_size
 
         # Move the labyrinth up (remove first lines and repeat loop)
         for i in range(MAZE_SPEED):
-            if(first_grid_line):
+            if first_grid_line:
                 first_grid_line.pop(0)
+
+        # Add kiko to the screen
+        screen.blit(kiko.skin, kiko.pos)
 
         # Update the display
         pygame.display.update()
+
+        # Check if kiko did collide with maze walls
+        for wall in walls:
+            if kiko.rect.colliderect(wall):
+                pygame.quit()
+
 
 # Calls main function if executed as a script
 if __name__ == '__main__':
