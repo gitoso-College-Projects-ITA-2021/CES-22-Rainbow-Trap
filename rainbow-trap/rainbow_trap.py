@@ -49,6 +49,28 @@ def game_intro(screen):
                     intro = False
 
 
+def paused(screen):
+    pause = True
+
+    while pause:
+
+        myfont = pygame.font.SysFont('', 150)
+        PAUSE = myfont.render('Paused', False, WHITE)
+        screen.blit(PAUSE, (SCREEN_SIZE // 2 - 200, SCREEN_SIZE // 2 - 75))
+        pygame.display.update()
+
+        for event in pygame.event.get():
+
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+            if event.type == KEYDOWN:
+                if event.key == K_RETURN:
+                    pause = False
+                
+        pygame.display.update()
+
+
 # Main game flow
 def main(argv):
     # Game initalization
@@ -83,8 +105,11 @@ def main(argv):
                     kiko.change_dir(LEFT)
                 elif event.key == K_RIGHT:
                     kiko.change_dir(RIGHT)
-                if event.key in [K_a, K_w, K_s, K_d]:
+                elif event.key in [K_a, K_w, K_s, K_d]:
                     kiko.choose_color()
+                if event.key == pygame.K_p:
+                    paused(screen)
+
             # Event: Key rekeased
             if event.type == KEYUP:
                 if event.key == K_RIGHT and kiko.move == RIGHT:
