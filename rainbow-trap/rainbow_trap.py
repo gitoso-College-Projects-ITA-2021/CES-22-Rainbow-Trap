@@ -29,12 +29,11 @@ def initalize_display(argv):
 def game_intro(screen, best_score):
 
     intro = True
-    score = 0
 
     while intro:
 
-        myfont = pygame.font.SysFont('Ubuntu Mono', 100)
-        myfont2 = pygame.font.SysFont('Comic Sans', 50)
+        myfont = pygame.font.SysFont('', 100)
+        myfont2 = pygame.font.SysFont('', 50)
         myfont3 = pygame.font.SysFont('', 50)
         RT = myfont.render('Rainbow Trap', False, WHITE)
         PS = myfont2.render('Press ENTER to play', False, WHITE)
@@ -95,6 +94,7 @@ def main(argv):
 
         # Runs the intro
         game_intro(screen, best_score)
+        score = 0
         game = True
 
         # Main loop
