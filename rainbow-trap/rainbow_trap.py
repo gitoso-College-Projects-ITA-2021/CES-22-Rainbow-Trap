@@ -27,18 +27,21 @@ def initalize_display(argv):
     return screen
 
 
-def game_intro(screen):
+def game_intro(screen, best_score):
 
     intro = True
+    score = 0
 
     while intro:
-
-        myfont = pygame.font.SysFont('Ubuntu Mono', 150)
+        myfont = pygame.font.SysFont('Ubuntu Mono', 100)
         myfont2 = pygame.font.SysFont('Comic Sans', 50)
+        myfont3 = pygame.font.SysFont('', 50)
         RT = myfont.render('Rainbow Trap', False, WHITE)
         PS = myfont2.render('Press ENTER or START to play', False, WHITE)
+        BS = myfont3.render('Best score '+str(best_score), False, WHITE)
         screen.blit(RT, (200, SCREEN_SIZE // 2 - 100))
         screen.blit(PS, (200, SCREEN_SIZE // 2 + 100))
+        screen.blit(BS, (200, SCREEN_SIZE // 2 + 200))
         pygame.display.update()
 
         for event in pygame.event.get():
@@ -75,161 +78,169 @@ def paused(screen):
 
 # Main game flow
 def main(argv):
-    # Game initalization
-    pygame.init()
-    pygame.joystick.init()
-    pygame.event.set_allowed([QUIT, KEYDOWN, KEYUP, JOYBUTTONDOWN, JOYBUTTONUP, JOYHATMOTION])
-
-    # Start Display and sets game parameters
-    screen = initalize_display(argv)
-    clock = pygame.time.Clock()
-    kiko = Kiko(PLAYER_SIZE, RED)
-    grid_x = SCREEN_SIZE // SCALE_FACTOR
-    grid_y = SCREEN_SIZE // SCALE_FACTOR
-    maze = Maze(SCREEN_SIZE // grid_x, grid_x, grid_y)
-    grid = maze.empty_grid()
-    first_grid_line = ''
-    maze.renew_grid()
-
-    # Start Joystick
-    joystick_count = pygame.joystick.get_count()
-
-    for i in range(joystick_count):
-        joystick = pygame.joystick.Joystick(i)
-        joystick.init()
-
-
-    # # Load Music
-    # pygame.mixer.init()
-    # pygame.mixer.music.load('sample_music.mp3')
-    # pygame.mixer.music.play(-1, 0.0)
-
-    continue_game = True
     score = 0
+    best_score = score
 
-    # Runs the intro
-    game_intro(screen)
-
-    # Main loop
     while True:
-        # Sets FPS to 60
-        clock.tick(60)
+        # Game initalization
+        screen = initalize_display(argv)
+        pygame.joystick.init()
+        pygame.event.set_allowed([QUIT, KEYDOWN, KEYUP, JOYBUTTONDOWN, JOYBUTTONUP, JOYHATMOTION])
+        pygame.event.set_allowed([QUIT, KEYDOWN, KEYUP])
+        clock = pygame.time.Clock()
+        kiko = Kiko(PLAYER_SIZE, RED)
+        grid_x = SCREEN_SIZE // SCALE_FACTOR
+        grid_y = SCREEN_SIZE // SCALE_FACTOR
+        maze = Maze(SCREEN_SIZE // grid_x, grid_x, grid_y)
+        grid = maze.empty_grid()
+        first_grid_line = ''
+        maze.renew_grid()
+        continue_game = True
 
-        # Score iterating
-        score = score + 1
-        myfont1 = pygame.font.SysFont('', 50)
-        SCORE = myfont1.render('Score '+str(score), True, WHITE)
+        # Start Joystick
+        joystick_count = pygame.joystick.get_count()
 
-        # Event handling
-        for event in pygame.event.get():
-            # Event: Quit Game
-            if event.type == QUIT:
-                pygame.quit()
-            # Event: Key pressed (Keyboard)
-            if event.type == KEYDOWN:
-                if event.key == K_LEFT:
-                    kiko.change_dir(LEFT)
-                elif event.key == K_RIGHT:
-                    kiko.change_dir(RIGHT)
-                elif event.key in [K_a, K_w, K_s, K_d]:
-                    kiko.choose_color()
-                if event.key == pygame.K_p:
-                    paused(screen)
+        for i in range(joystick_count):
+            joystick = pygame.joystick.Joystick(i)
+            joystick.init()
 
-            # Event: Key released (Keyboard)
-            if event.type == KEYUP:
-                if event.key == K_RIGHT and kiko.move == RIGHT:
-                    if pygame.key.get_pressed()[K_LEFT]:
+        # # Load Music
+        # pygame.mixer.init()
+        # pygame.mixer.music.load('sample_music.mp3')
+        # pygame.mixer.music.play(-1, 0.0)
+
+
+        # Runs the intro
+        game_intro(screen, best_score)
+        game = True
+
+        # Main loop
+        while game:
+            # Sets FPS to 60
+            clock.tick(60)
+
+            # Score iterating
+            score = score + 1
+            myfont1 = pygame.font.SysFont('', 50)
+            SCORE = myfont1.render('Score '+str(score), True, WHITE)
+
+            # Event handling
+            for event in pygame.event.get():
+                # Event: Quit Game
+                if event.type == QUIT:
+                    pygame.quit()
+                # Event: Key pressed
+                if event.type == KEYDOWN:
+                    if event.key == K_LEFT:
                         kiko.change_dir(LEFT)
-                    else:
-                        kiko.change_dir(STAY)
-                if event.key == K_LEFT and kiko.move == LEFT:
-                    if pygame.key.get_pressed()[K_RIGHT]:
+                    elif event.key == K_RIGHT:
+                        kiko.change_dir(RIGHT)
+                    elif event.key in [K_a, K_w, K_s, K_d]:
+                        kiko.choose_color()
+                    elif event.key == pygame.K_p:
+                        paused(screen)
+
+                # Event: Key rekeased
+                if event.type == KEYUP:
+                    if event.key == K_RIGHT and kiko.move == RIGHT:
+                        if pygame.key.get_pressed()[K_LEFT]:
+                            kiko.change_dir(LEFT)
+                        else:
+                            kiko.change_dir(STAY)
+                    if event.key == K_LEFT and kiko.move == LEFT:
+                        if pygame.key.get_pressed()[K_RIGHT]:
+                            kiko.change_dir(RIGHT)
+                        else:
+                            kiko.change_dir(STAY)
+                # Event: Button pressed (Controller)
+                if event.type == JOYHATMOTION:
+                    if event.value[0] == -1:
+                        kiko.change_dir(LEFT)
+                    elif event.value[0] == 1:
                         kiko.change_dir(RIGHT)
                     else:
                         kiko.change_dir(STAY)
+                if event.type == JOYBUTTONDOWN:
+                    if event.button in [0, 1, 2, 3]:
+                        kiko.choose_color()
 
-            # Event: Button pressed (Controller)
-            if event.type == JOYHATMOTION:
-                if event.value[0] == -1:
-                    kiko.change_dir(LEFT)
-                elif event.value[0] == 1:
-                    kiko.change_dir(RIGHT)
-                else:
-                    kiko.change_dir(STAY)
-            if event.type == JOYBUTTONDOWN:
-                if event.button in [0, 1, 2, 3]:
-                    kiko.choose_color()
+            # Move the player
+            kiko.moving()
 
-        # Move the player
-        kiko.moving()
+            # Update and move the maze
 
-        # Update and move the maze
+            # Clear the screen
+            screen.fill(BLACK)
 
-        # Clear the screen
-        screen.fill((21, 21, 21))
+            # Renew top lines if needed
+            if not first_grid_line:
+                first_grid_line = maze.convert_to_full_grid(grid[0])
+                grid.pop(0)
+                grid.append(maze.get_line())
 
-        # Renew top lines if needed
-        if not first_grid_line:
-            first_grid_line = maze.convert_to_full_grid(grid[0])
-            grid.pop(0)
-            grid.append(maze.get_line())
+            # Draw top lines of the maze (out of screen)
+            count_y = -maze.cell_size
+            for line in first_grid_line:
+                count_x = 0
+                for cell in line:
+                    maze_skin = pygame.Surface((maze.cell_size, 1))
+                    maze_skin.fill(RED)
+                    if cell.state == WALL:
+                        screen.blit(maze_skin, (count_x, count_y))
+                    count_x = count_x + maze.cell_size
+                count_y = count_y + 1
 
-        # Draw top lines of the maze (out of screen)
-        count_y = -maze.cell_size
-        for line in first_grid_line:
-            count_x = 0
-            for cell in line:
-                maze_skin = pygame.Surface((maze.cell_size, 1))
-                maze_skin.fill(RED)
-                if cell.state == WALL:
-                    screen.blit(maze_skin, (count_x, count_y))
-                count_x = count_x + maze.cell_size
-            count_y = count_y + 1
+            # Array that saves maze walls (for collision purposes)
+            walls = []
 
-        # Array that saves maze walls (for collision purposes)
-        walls = []
+            # Draw the rest of the maze (now count_y = 0)
+            for line in grid:
+                count_x = 0
+                for cell in line:
+                    maze_skin = pygame.Surface((maze.cell_size, maze.cell_size))
+                    maze_skin.fill(cell.color)
+                    # # Fill maze with color
+                    # if cell.color == kiko.color:
+                    #     walls.append(pygame.Rect(((count_x, count_y)), (maze.cell_size, maze.cell_size)))
+                    #     maze_skin.set_alpha(255)
+                    # else:
+                    #     maze_skin.set_alpha(50)
+                    # screen.blit(maze_skin, (count_x, count_y))
+                    # If maze wall fill with sprite
+                    if cell.state == WALL:
+                        image_name = 'images/' + ''.join(cell.neighbors) + '_' + cell.get_color_string() + '.png'
+                        if os.path.isfile(image_name):
+                            image = pygame.image.load(image_name).convert_alpha()
+                        else:
+                            # Dummy image for things that are not done
+                            image = pygame.image.load('images/4.png').convert_alpha()
 
-        # Draw the rest of the maze (now count_y = 0)
-        for line in grid:
-            count_x = 0
-            for cell in line:
-                maze_skin = pygame.Surface((maze.cell_size, maze.cell_size))
-                maze_skin.fill(cell.color)
-                if cell.state == WALL:
-                    image_name = 'images/' + ''.join(cell.neighbors) + '_' + cell.get_color_string() + '.png'
-                    if os.path.isfile(image_name):
-                        image = pygame.image.load(image_name).convert_alpha()
-                    else:
-                        # Dummy image for things that are not done
-                        image = pygame.image.load('images/4.png').convert_alpha()
+                        if cell.color != kiko.color:
+                            walls.append(pygame.Rect(((count_x, count_y)), (maze.cell_size, maze.cell_size)))
+                        else:
+                            image.fill((255, 255, 255, WALL_OPACITY), None, pygame.BLEND_RGBA_MULT)
+                        screen.blit(image, (count_x, count_y))
+                    count_x = count_x + maze.cell_size
+                count_y = count_y + maze.cell_size
 
-                    if cell.color != kiko.color:
-                        walls.append(pygame.Rect(((count_x, count_y)), (maze.cell_size, maze.cell_size)))
-                    else:
-                        image.fill((255, 255, 255, WALL_OPACITY), None, pygame.BLEND_RGBA_MULT)
-                    screen.blit(image, (count_x, count_y))
-                count_x = count_x + maze.cell_size
-            count_y = count_y + maze.cell_size
+            # Move the labyrinth up (remove first lines and repeat loop)
+            for i in range(MAZE_SPEED):
+                if first_grid_line:
+                    first_grid_line.pop(0)
 
-        # Move the labyrinth up (remove first lines and repeat loop)
-        for i in range(MAZE_SPEED):
-            if first_grid_line:
-                first_grid_line.pop(0)
+            # Add kiko to the screen
+            screen.blit(kiko.skin, kiko.pos)
 
-        # Add kiko to the screen
-        screen.blit(kiko.skin, kiko.pos)
+            screen.blit(SCORE, (0, 0))
 
-        screen.blit(SCORE, (0, 0))
+            # Update the display
+            pygame.display.update()
 
-        # Update the display
-        pygame.display.update()
-
-        # Check if kiko did collide with maze walls
-        for wall in walls:
-            if kiko.rect.colliderect(wall):
-                pygame.quit()
-
+            # Check if kiko did collide with maze walls
+            for wall in walls:
+                if kiko.rect.colliderect(wall):
+                    best_score = score
+                    game = False
 
 # Calls main function if executed as a script
 if __name__ == '__main__':
