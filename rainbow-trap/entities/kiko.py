@@ -11,6 +11,7 @@ class Kiko(pygame.sprite.Sprite):
     def __init__(self, size, color):
         pygame.sprite.Sprite.__init__(self)
         self.color = color
+        self.skin = pygame.Surface((size, size))
         self.size = size
         self.skin = pygame.Surface((size, size))
         self.pos = (INITIAL_X, INITIAL_Y)

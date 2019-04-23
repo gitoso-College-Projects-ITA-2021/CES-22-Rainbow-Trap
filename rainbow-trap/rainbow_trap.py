@@ -27,13 +27,58 @@ def initalize_display(argv):
     return screen
 
 
+def game_intro(screen):
+
+    intro = True
+
+    while intro:
+
+        myfont = pygame.font.SysFont('Ubuntu Mono', 150)
+        myfont2 = pygame.font.SysFont('Comic Sans', 50)
+        RT = myfont.render('Rainbow Trap', False, WHITE)
+        PS = myfont2.render('Press ENTER to play', False, WHITE)
+        screen.blit(RT, (200, SCREEN_SIZE // 2 - 100))
+        screen.blit(PS, (200, SCREEN_SIZE // 2 + 100))
+        pygame.display.update()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+            if event.type == KEYDOWN:
+                if event.key == K_RETURN:
+                    intro = False
+
+
+def paused(screen):
+    pause = True
+
+    while pause:
+
+        myfont = pygame.font.SysFont('', 150)
+        PAUSE = myfont.render('Paused', False, WHITE)
+        screen.blit(PAUSE, (SCREEN_SIZE // 2 - 200, SCREEN_SIZE // 2 - 75))
+        pygame.display.update()
+
+        for event in pygame.event.get():
+
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+            if event.type == KEYDOWN:
+                if event.key == K_RETURN:
+                    pause = False
+
+
 # Main game flow
 def main(argv):
     # Game initalization
     pygame.init()
     pygame.joystick.init()
-    screen = initalize_display(argv)
     pygame.event.set_allowed([QUIT, KEYDOWN, KEYUP, JOYBUTTONDOWN, JOYBUTTONUP, JOYHATMOTION])
+
+    # Start Display and sets game parameters
+    screen = initalize_display(argv)
     clock = pygame.time.Clock()
     kiko = Kiko(PLAYER_SIZE, RED)
     grid_x = SCREEN_SIZE // SCALE_FACTOR
@@ -49,6 +94,10 @@ def main(argv):
     # pygame.mixer.music.play(-1, 0.0)
 
     continue_game = True
+    score = 0
+
+    # Runs the intro
+    game_intro(screen)
 
     # Start Joystick
     joystick_count = pygame.joystick.get_count()
@@ -62,6 +111,11 @@ def main(argv):
         # Sets FPS to 60
         clock.tick(60)
 
+        # Score iterating
+        score = score + 1
+        myfont1 = pygame.font.SysFont('', 50)
+        SCORE = myfont1.render('Score '+str(score), True, WHITE)
+
         # Event handling
         for event in pygame.event.get():
             # Event: Quit Game
@@ -73,8 +127,11 @@ def main(argv):
                     kiko.change_dir(LEFT)
                 elif event.key == K_RIGHT:
                     kiko.change_dir(RIGHT)
-                if event.key in [K_a, K_w, K_s, K_d]:
+                elif event.key in [K_a, K_w, K_s, K_d]:
                     kiko.choose_color()
+                if event.key == pygame.K_p:
+                    paused(screen)
+
             # Event: Key released (Keyboard)
             if event.type == KEYUP:
                 if event.key == K_RIGHT and kiko.move == RIGHT:
@@ -99,8 +156,6 @@ def main(argv):
             if event.type == JOYBUTTONDOWN:
                 if event.button in [0, 1, 2, 3]:
                     kiko.choose_color()
-
-            # Event: Button released
 
         # Move the player
         kiko.moving()
@@ -137,14 +192,6 @@ def main(argv):
             for cell in line:
                 maze_skin = pygame.Surface((maze.cell_size, maze.cell_size))
                 maze_skin.fill(cell.color)
-                # # Fill maze with color
-                # if cell.color == kiko.color:
-                #     walls.append(pygame.Rect(((count_x, count_y)), (maze.cell_size, maze.cell_size)))
-                #     maze_skin.set_alpha(255)
-                # else:
-                #     maze_skin.set_alpha(50)
-                # screen.blit(maze_skin, (count_x, count_y))
-                # If maze wall fill with sprite
                 if cell.state == WALL:
                     image_name = 'images/' + ''.join(cell.neighbors) + '_' + cell.get_color_string() + '.png'
                     if os.path.isfile(image_name):
@@ -168,6 +215,8 @@ def main(argv):
 
         # Add kiko to the screen
         screen.blit(kiko.skin, kiko.pos)
+
+        screen.blit(SCORE, (0, 0))
 
         # Update the display
         pygame.display.update()
