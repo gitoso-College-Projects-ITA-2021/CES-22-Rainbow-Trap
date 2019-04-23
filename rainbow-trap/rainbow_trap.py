@@ -5,6 +5,7 @@
 import pygame
 import os
 import sys
+import random
 from pygame.locals import *
 
 # Import local settings
@@ -84,6 +85,25 @@ def main(argv):
     score = 0
     best_score = score
 
+    # Load Music
+    playlist = []
+    playlist.append('music/cake.mp3')
+    playlist.append('music/daftpunk.mp3')
+    playlist.append('music/darude.mp3')
+    playlist.append('music/eminem.mp3')
+    playlist.append('music/feelgood.mp3')
+    playlist.append('music/fox.mp3')
+    playlist.append('music/mchammer.mp3')
+    playlist.append('music/pumpedup.mp3')
+    playlist.append('music/spectre.mp3')
+    random.shuffle(playlist)
+
+    pygame.mixer.init()
+    pygame.mixer.music.load(playlist.pop())
+    for song in playlist:
+        pygame.mixer.music.queue(song)
+    pygame.mixer.music.play()
+
     while True:
         # Game initalization
         screen = initalize_display(argv)
@@ -105,12 +125,6 @@ def main(argv):
         for i in range(joystick_count):
             joystick = pygame.joystick.Joystick(i)
             joystick.init()
-
-        # # Load Music
-        # pygame.mixer.init()
-        # pygame.mixer.music.load('sample_music.mp3')
-        # pygame.mixer.music.play(-1, 0.0)
-
 
         # Runs the intro
         game_intro(screen, best_score)
@@ -203,14 +217,6 @@ def main(argv):
                 for cell in line:
                     maze_skin = pygame.Surface((maze.cell_size, maze.cell_size))
                     maze_skin.fill(cell.color)
-                    # # Fill maze with color
-                    # if cell.color == kiko.color:
-                    #     walls.append(pygame.Rect(((count_x, count_y)), (maze.cell_size, maze.cell_size)))
-                    #     maze_skin.set_alpha(255)
-                    # else:
-                    #     maze_skin.set_alpha(50)
-                    # screen.blit(maze_skin, (count_x, count_y))
-                    # If maze wall fill with sprite
                     if cell.state == WALL:
                         image_name = 'images/' + ''.join(cell.neighbors) + '_' + cell.get_color_string() + '.png'
                         if os.path.isfile(image_name):
