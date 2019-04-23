@@ -26,10 +26,52 @@ def initalize_display(argv):
     return screen
 
 
+def game_intro(screen):
+
+    intro = True
+
+    while intro:
+
+        myfont = pygame.font.SysFont('Ubuntu Mono', 150)
+        myfont2 = pygame.font.SysFont('Comic Sans', 50)
+        RT = myfont.render('Rainbow Trap', False, WHITE)
+        PS = myfont2.render('Press ENTER to play', False, WHITE)
+        screen.blit(RT, (200, SCREEN_SIZE // 2 - 100))
+        screen.blit(PS, (200, SCREEN_SIZE // 2 + 100))
+        pygame.display.update()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+            if event.type == KEYDOWN:
+                if event.key == K_RETURN:
+                    intro = False
+
+
+def paused(screen):
+    pause = True
+
+    while pause:
+
+        myfont = pygame.font.SysFont('', 150)
+        PAUSE = myfont.render('Paused', False, WHITE)
+        screen.blit(PAUSE, (SCREEN_SIZE // 2 - 200, SCREEN_SIZE // 2 - 75))
+        pygame.display.update()
+
+        for event in pygame.event.get():
+
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+            if event.type == KEYDOWN:
+                if event.key == K_RETURN:
+                    pause = False
+
+
 # Main game flow
 def main(argv):
     # Game initalization
-    pygame.init()
     screen = initalize_display(argv)
     pygame.event.set_allowed([QUIT, KEYDOWN, KEYUP])
     clock = pygame.time.Clock()
@@ -41,11 +83,20 @@ def main(argv):
     first_grid_line = ''
     maze.renew_grid()
     continue_game = True
+    score = 0
+
+    # Runs the intro
+    game_intro(screen)
 
     # Main loop
     while True:
         # Sets FPS to 60
         clock.tick(60)
+
+        # Score iterating
+        score = score + 1
+        myfont1 = pygame.font.SysFont('', 50)
+        SCORE = myfont1.render('Score '+str(score), True, WHITE)
 
         # Event handling
         for event in pygame.event.get():
@@ -58,8 +109,11 @@ def main(argv):
                     kiko.change_dir(LEFT)
                 elif event.key == K_RIGHT:
                     kiko.change_dir(RIGHT)
-                if event.key in [K_a, K_w, K_s, K_d]:
+                elif event.key in [K_a, K_w, K_s, K_d]:
                     kiko.choose_color()
+                if event.key == pygame.K_p:
+                    paused(screen)
+
             # Event: Key rekeased
             if event.type == KEYUP:
                 if event.key == K_RIGHT and kiko.move == RIGHT:
@@ -139,6 +193,8 @@ def main(argv):
 
         # Add kiko to the screen
         screen.blit(kiko.skin, kiko.pos)
+
+        screen.blit(SCORE, (0, 0))
 
         # Update the display
         pygame.display.update()
