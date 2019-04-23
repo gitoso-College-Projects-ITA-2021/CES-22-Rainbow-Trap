@@ -9,7 +9,7 @@ from config import *
 # Import classes
 from entities.pool import Pool
 
-colors = [RED, GREEN, BLUE, YELLOW]
+colors_pool = [RED, GREEN, BLUE, YELLOW]
 
 
 # Class for Maze generation
@@ -19,7 +19,19 @@ class Maze:
         self.x_length = x_length
         self.y_length = y_length
         self.pool = Pool()
+        self.colors = self.new_colors()
+        self.inv_count = INVALID_COUNT
+        self.obst_count = OBSTACLES_COUNT
         self.grid = self.new_grid()
+        
+    def new_colors(self):
+        random_c_1 = colors_pool.pop(randint(0, len(colors_pool) - 1))
+        random_c_2 = colors_pool.pop(randint(0, len(colors_pool) - 1))
+        return [random_c_1, random_c_2]
+
+    def add_color(self):
+        if len(colors_pool) != 0:
+            self.colors.append(colors_pool.pop(randint(0, len(colors_pool) - 1)))
 
     def new_grid(self):
         # Empty and avaiable grid
@@ -35,13 +47,13 @@ class Maze:
         invalid_count = 0
         obstacles_count = 0
 
-        while invalid_count < 500 and obstacles_count < 100:
+        while invalid_count < self.inv_count and obstacles_count < self.obst_count:
             x = randint(0, self.x_length - 1)
             y = randint(0, self.y_length - 1)
 
             if grid[x][y] and grid[x][y].state == AVAIABLE:
                 obstacle = self.pool.get_obstacle()
-                color = colors[randint(0, len(colors) - 1)]
+                color = self.colors[randint(0, len(self.colors) - 1)]
                 x = x - 1
                 y = y - 1
 

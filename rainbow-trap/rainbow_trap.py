@@ -30,11 +30,11 @@ def initalize_display(argv):
 def game_intro(screen, best_score):
 
     intro = True
-    score = 0
 
     while intro:
-        myfont = pygame.font.SysFont('Ubuntu Mono', 100)
-        myfont2 = pygame.font.SysFont('Comic Sans', 50)
+        myfont = pygame.font.SysFont('', 100)
+        myfont2 = pygame.font.SysFont('', 50)
+
         myfont3 = pygame.font.SysFont('', 50)
         RT = myfont.render('Rainbow Trap', False, WHITE)
         PS = myfont2.render('Press ENTER or START to play', False, WHITE)
@@ -79,6 +79,27 @@ def paused(screen):
                     pause = False
 
 
+def difficulty_update(score, maze):
+
+    level = score // SCORE_LEVEL
+
+    if(level == 2):
+        if(len(maze.colors) == 2):
+            maze.add_color()
+
+    if(level == 4):
+        if(len(maze.colors) == 3):
+            maze.add_color()
+
+    maze.inv_count = INVALID_COUNT*level*5 + INVALID_COUNT
+    if(maze.inv_count > COUNT_MAX):
+        maze.inv_count = COUNT_MAX
+
+    maze.obst_count = OBSTACLES_COUNT*level*5 + OBSTACLES_COUNT
+    if(maze.obst_count > COUNT_MAX):
+        maze.obst_count = COUNT_MAX
+
+
 # Main game flow
 def main(argv):
     score = 0
@@ -97,6 +118,7 @@ def main(argv):
         grid = maze.empty_grid()
         first_grid_line = ''
         maze.renew_grid()
+        speed = MAZE_SPEED
         continue_game = True
 
         # Start Joystick
@@ -114,6 +136,8 @@ def main(argv):
 
         # Runs the intro
         game_intro(screen, best_score)
+        score = 0
+        difficulty_update(score, maze)
         game = True
 
         # Main loop
@@ -121,10 +145,21 @@ def main(argv):
             # Sets FPS to 60
             clock.tick(60)
 
+            # Update difficulty
+            difficulty_update(score, maze)
+            level = score // SCORE_LEVEL
+            speed = MAZE_SPEED + level - len(maze.colors) + 2
+            if(speed > MAX_MAZE_SPEED):
+                speed = MAX_MAZE_SPEED
+
             # Score iterating
             score = score + 1
+            level = score // SCORE_LEVEL
             myfont1 = pygame.font.SysFont('', 50)
             SCORE = myfont1.render('Score '+str(score), True, WHITE)
+            LEVEL = myfont1.render('Level '+str(level), True, WHITE)
+
+            print(speed)
 
             # Event handling
             for event in pygame.event.get():
@@ -228,7 +263,7 @@ def main(argv):
                 count_y = count_y + maze.cell_size
 
             # Move the labyrinth up (remove first lines and repeat loop)
-            for i in range(MAZE_SPEED):
+            for i in range(speed):
                 if first_grid_line:
                     first_grid_line.pop(0)
 
@@ -236,6 +271,7 @@ def main(argv):
             screen.blit(kiko.skin, kiko.pos)
 
             screen.blit(SCORE, (0, 0))
+            screen.blit(LEVEL, (300, 0))
 
             # Update the display
             pygame.display.update()
