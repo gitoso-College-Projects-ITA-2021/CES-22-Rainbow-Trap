@@ -13,6 +13,7 @@ from config import *
 # Import classes
 from entities.kiko import Kiko
 from entities.maze import *
+from entities.controller import Controller
 
 
 # Initialize game display
@@ -30,8 +31,9 @@ def initalize_display(argv):
 def main(argv):
     # Game initalization
     pygame.init()
+    pygame.joystick.init()
     screen = initalize_display(argv)
-    pygame.event.set_allowed([QUIT, KEYDOWN, KEYUP])
+    pygame.event.set_allowed([QUIT, KEYDOWN, KEYUP, JOYBUTTONDOWN, JOYBUTTONUP, JOYHATMOTION])
     clock = pygame.time.Clock()
     kiko = Kiko(PLAYER_SIZE, RED)
     grid_x = SCREEN_SIZE // SCALE_FACTOR
@@ -40,7 +42,20 @@ def main(argv):
     grid = maze.empty_grid()
     first_grid_line = ''
     maze.renew_grid()
+
+    # # Load Music
+    # pygame.mixer.init()
+    # pygame.mixer.music.load('sample_music.mp3')
+    # pygame.mixer.music.play(-1, 0.0)
+
     continue_game = True
+
+    # Start Joystick
+    joystick_count = pygame.joystick.get_count()
+
+    for i in range(joystick_count):
+        joystick = pygame.joystick.Joystick(i)
+        joystick.init()
 
     # Main loop
     while True:
@@ -52,7 +67,7 @@ def main(argv):
             # Event: Quit Game
             if event.type == QUIT:
                 pygame.quit()
-            # Event: Key pressed
+            # Event: Key pressed (Keyboard)
             if event.type == KEYDOWN:
                 if event.key == K_LEFT:
                     kiko.change_dir(LEFT)
@@ -60,7 +75,7 @@ def main(argv):
                     kiko.change_dir(RIGHT)
                 if event.key in [K_a, K_w, K_s, K_d]:
                     kiko.choose_color()
-            # Event: Key rekeased
+            # Event: Key released (Keyboard)
             if event.type == KEYUP:
                 if event.key == K_RIGHT and kiko.move == RIGHT:
                     if pygame.key.get_pressed()[K_LEFT]:
@@ -73,13 +88,27 @@ def main(argv):
                     else:
                         kiko.change_dir(STAY)
 
+            # Event: Button pressed (Controller)
+            if event.type == JOYHATMOTION:
+                if event.value[0] == -1:
+                    kiko.change_dir(LEFT)
+                elif event.value[0] == 1:
+                    kiko.change_dir(RIGHT)
+                else:
+                    kiko.change_dir(STAY)
+            if event.type == JOYBUTTONDOWN:
+                if event.button in [0, 1, 2, 3]:
+                    kiko.choose_color()
+
+            # Event: Button released
+
         # Move the player
         kiko.moving()
 
         # Update and move the maze
 
         # Clear the screen
-        screen.fill(BLACK)
+        screen.fill((21, 21, 21))
 
         # Renew top lines if needed
         if not first_grid_line:

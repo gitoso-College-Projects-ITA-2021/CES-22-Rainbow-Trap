@@ -1,0 +1,25 @@
+RED:
+IN: #EE4035
+CONT: #D50000
+OUT: #E53935
+
+
+BLUE:
+IN: #18FFFF
+CONT: #00B8D4
+OUT: #00E5FF
+
+GREEN:
+IN: #76FF03
+CONT: #7CB342
+OUT: #64DD17
+
+YELLOW:
+IN: #FFEB3B
+CONT: #FBC02D
+OUT: #FDD835
+
+
+convert *.png -fill '#FFEB3B' -opaque '#EE4035' -set filename:fname '%t' +adjoin '%[filename:fname].png'
+convert *.png -fill '#FBC02D' -opaque '#D50000' -set filename:fname '%t' +adjoin '%[filename:fname].png'
+convert *.png -fill '#FDD835' -opaque '#E53935' -set filename:fname '%t' +adjoin '%[filename:fname].png'
