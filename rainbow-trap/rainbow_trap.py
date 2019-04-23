@@ -72,22 +72,25 @@ def paused(screen):
                     pause = False
 
 
-def difficulty_update(score, maze, speed):
-    # Add color
-    if((score // SCORE_LEVEL) == 2 and len(maze.colors) == 2):
-        maze.add_color()
-    if((score // SCORE_LEVEL) == 4 and len(maze.colors) == 3):
-        maze.add_color()
-    
-    # Change speed
-    if((score // SCORE_LEVEL) == 1 and speed == MAZE_SPEED):
-        speed = speed + 1
-    if((score // SCORE_LEVEL) == 3 and speed == MAZE_SPEED + 1):
-        speed = speed + 1
-    if((score // SCORE_LEVEL) == 5 and speed == MAZE_SPEED + 2):
-        speed = speed + 1
-    if((score // SCORE_LEVEL) == 6 and speed == MAZE_SPEED + 3):
-        speed = speed + 1
+def difficulty_update(score, maze):
+
+    level = score // SCORE_LEVEL
+
+    if(level == 2):
+        if(len(maze.colors) == 2):
+            maze.add_color()
+
+    if(level == 4):
+        if(len(maze.colors) == 3):
+            maze.add_color()
+
+    maze.inv_count = INVALID_COUNT*level*5 + INVALID_COUNT
+    if(maze.inv_count > COUNT_MAX):
+        maze.inv_count = COUNT_MAX
+
+    maze.obst_count = OBSTACLES_COUNT*level*5 + OBSTACLES_COUNT
+    if(maze.obst_count > COUNT_MAX):
+        maze.obst_count = COUNT_MAX
 
 
 # Main game flow
@@ -114,7 +117,7 @@ def main(argv):
         # Runs the intro
         game_intro(screen, best_score)
         score = 0
-        difficulty_update(score, maze, speed)
+        difficulty_update(score, maze)
         game = True
 
         # Main loop
@@ -123,12 +126,20 @@ def main(argv):
             clock.tick(60)
 
             # Update difficulty
-            difficulty_update(score, maze, speed)
+            difficulty_update(score, maze)
+            level = score // SCORE_LEVEL
+            speed = MAZE_SPEED + level - len(maze.colors) + 2
+            if(speed > MAX_MAZE_SPEED):
+                speed = MAX_MAZE_SPEED
 
             # Score iterating
             score = score + 1
+            level = score // SCORE_LEVEL
             myfont1 = pygame.font.SysFont('', 50)
             SCORE = myfont1.render('Score '+str(score), True, WHITE)
+            LEVEL = myfont1.render('Level '+str(level), True, WHITE)
+
+            print(speed)
 
             # Event handling
             for event in pygame.event.get():
@@ -227,6 +238,7 @@ def main(argv):
             screen.blit(kiko.skin, kiko.pos)
 
             screen.blit(SCORE, (0, 0))
+            screen.blit(LEVEL, (300, 0))
 
             # Update the display
             pygame.display.update()
