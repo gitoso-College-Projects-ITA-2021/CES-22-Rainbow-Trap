@@ -13,6 +13,7 @@ from config import *
 # Import classes
 from entities.kiko import Kiko
 from entities.maze import *
+from entities.controller import Controller
 
 
 # Initialize game display
@@ -31,12 +32,12 @@ def game_intro(screen, best_score):
     intro = True
 
     while intro:
-
         myfont = pygame.font.SysFont('', 100)
         myfont2 = pygame.font.SysFont('', 50)
+
         myfont3 = pygame.font.SysFont('', 50)
         RT = myfont.render('Rainbow Trap', False, WHITE)
-        PS = myfont2.render('Press ENTER to play', False, WHITE)
+        PS = myfont2.render('Press ENTER or START to play', False, WHITE)
         BS = myfont3.render('Best score '+str(best_score), False, WHITE)
         screen.blit(RT, (200, SCREEN_SIZE // 2 - 100))
         screen.blit(PS, (200, SCREEN_SIZE // 2 + 100))
@@ -49,6 +50,9 @@ def game_intro(screen, best_score):
                 quit()
             if event.type == KEYDOWN:
                 if event.key == K_RETURN:
+                    intro = False
+            if event.type == JOYBUTTONDOWN:
+                if event.button == B_START:
                     intro = False
 
 
@@ -69,6 +73,9 @@ def paused(screen):
                 quit()
             if event.type == KEYDOWN:
                 if event.key == K_RETURN:
+                    pause = False
+            if event.type == JOYBUTTONDOWN:
+                if event.button == B_START:
                     pause = False
 
 
@@ -95,14 +102,14 @@ def difficulty_update(score, maze):
 
 # Main game flow
 def main(argv):
-
     score = 0
     best_score = score
 
     while True:
         # Game initalization
         screen = initalize_display(argv)
-        pygame.event.set_allowed([QUIT, KEYDOWN, KEYUP])
+        pygame.joystick.init()
+        pygame.event.set_allowed([QUIT, KEYDOWN, KEYUP, JOYBUTTONDOWN, JOYBUTTONUP, JOYHATMOTION])
         clock = pygame.time.Clock()
         kiko = Kiko(PLAYER_SIZE, RED)
         grid_x = SCREEN_SIZE // SCALE_FACTOR
@@ -113,6 +120,19 @@ def main(argv):
         maze.renew_grid()
         speed = MAZE_SPEED
         continue_game = True
+
+        # Start Joystick
+        joystick_count = pygame.joystick.get_count()
+
+        for i in range(joystick_count):
+            joystick = pygame.joystick.Joystick(i)
+            joystick.init()
+
+        # # Load Music
+        # pygame.mixer.init()
+        # pygame.mixer.music.load('sample_music.mp3')
+        # pygame.mixer.music.play(-1, 0.0)
+
 
         # Runs the intro
         game_intro(screen, best_score)
@@ -154,7 +174,7 @@ def main(argv):
                         kiko.change_dir(RIGHT)
                     elif event.key in [K_a, K_w, K_s, K_d]:
                         kiko.choose_color()
-                    if event.key == pygame.K_p:
+                    elif event.key == pygame.K_p:
                         paused(screen)
 
                 # Event: Key rekeased
@@ -169,6 +189,19 @@ def main(argv):
                             kiko.change_dir(RIGHT)
                         else:
                             kiko.change_dir(STAY)
+                # Event: Button pressed (Controller)
+                if event.type == JOYHATMOTION:
+                    if event.value[0] == -1:
+                        kiko.change_dir(LEFT)
+                    elif event.value[0] == 1:
+                        kiko.change_dir(RIGHT)
+                    else:
+                        kiko.change_dir(STAY)
+                if event.type == JOYBUTTONDOWN:
+                    if event.button in [0, 1, 2, 3]:
+                        kiko.choose_color()
+                    elif event.button == B_START:
+                            paused(screen)
 
             # Move the player
             kiko.moving()
@@ -248,7 +281,6 @@ def main(argv):
                 if kiko.rect.colliderect(wall):
                     best_score = score
                     game = False
-
 
 # Calls main function if executed as a script
 if __name__ == '__main__':

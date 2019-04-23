@@ -13,6 +13,7 @@ class Kiko(pygame.sprite.Sprite):
         self.color = color
         self.skin = pygame.Surface((size, size))
         self.size = size
+        self.skin = pygame.Surface((size, size))
         self.pos = (INITIAL_X, INITIAL_Y)
         self.move = STAY
         self.skin.fill(self.color)
@@ -47,8 +48,32 @@ class Kiko(pygame.sprite.Sprite):
                 self.change_color(RED)
         elif pygame.key.get_pressed()[K_w]:
             self.change_color(YELLOW)
-        else:
+        elif pygame.key.get_pressed()[K_s]:
             self.change_color(GREEN)
+
+        joystick_count = pygame.joystick.get_count()
+
+        for i in range(joystick_count):
+            joystick = pygame.joystick.Joystick(i)
+            joystick.init()
+            if pygame.joystick.Joystick(i).get_button(B_X):
+                if pygame.joystick.Joystick(i).get_button(B_Y):
+                    self.change_color(VIOLET)
+                elif pygame.joystick.Joystick(i).get_button(B_A):
+                    self.change_color(INDIGO)
+                else:
+                    self.change_color(BLUE)
+            elif pygame.joystick.Joystick(i).get_button(B_B):
+                if pygame.joystick.Joystick(i).get_button(B_Y):
+                    self.change_color(ORANGE)
+                elif pygame.joystick.Joystick(i).get_button(B_A):
+                    self.change_color(WHITE)
+                else:
+                    self.change_color(RED)
+            elif pygame.joystick.Joystick(i).get_button(B_Y):
+                self.change_color(YELLOW)
+            elif pygame.joystick.Joystick(i).get_button(B_A):
+                self.change_color(GREEN)
 
     def change_color(self, color):
         self.color = color
