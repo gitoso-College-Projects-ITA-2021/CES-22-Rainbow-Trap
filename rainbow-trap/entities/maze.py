@@ -25,6 +25,7 @@ class Maze:
     
     def restart_colors(self):
         self.colors_pool = [RED, GREEN, BLUE, YELLOW]
+        self.colors = self.new_colors()
         
     def new_colors(self):
         random_c_1 = self.colors_pool.pop(randint(0, len(self.colors_pool) - 1))
