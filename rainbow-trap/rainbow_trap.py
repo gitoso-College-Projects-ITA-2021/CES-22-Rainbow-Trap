@@ -297,7 +297,8 @@ def main(argv):
             # Check if kiko did collide with maze walls
             for wall in walls:
                 if kiko.rect.colliderect(wall):
-                    best_score = score
+                    if score >= best_score:
+                        best_score = score
                     game = False
 
 # Calls main function if executed as a script
