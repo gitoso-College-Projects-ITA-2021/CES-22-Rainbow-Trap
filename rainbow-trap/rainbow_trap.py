@@ -21,7 +21,7 @@ from entities.controller import Controller
 def initalize_display(argv):
     pygame.init()
     flags = DOUBLEBUF  # (Enhance performance)
-    screen = pygame.display.set_mode((SCREEN_SIZE, SCREEN_SIZE), flags)
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGTH), flags)
     screen.set_alpha(None)  # (Enhance performance)
     pygame.display.set_caption('Rainbow Trap')
 
@@ -40,9 +40,9 @@ def game_intro(screen, best_score):
         RT = myfont.render('Rainbow Trap', False, WHITE)
         PS = myfont2.render('Press ENTER or START to play', False, WHITE)
         BS = myfont3.render('Best score '+str(best_score), False, WHITE)
-        screen.blit(RT, (200, SCREEN_SIZE // 2 - 100))
-        screen.blit(PS, (200, SCREEN_SIZE // 2 + 100))
-        screen.blit(BS, (200, SCREEN_SIZE // 2 + 200))
+        screen.blit(RT, (200, SCREEN_HEIGTH // 2 - 100))
+        screen.blit(PS, (200, SCREEN_HEIGTH // 2 + 100))
+        screen.blit(BS, (200, SCREEN_HEIGTH // 2 + 200))
         pygame.display.update()
 
         for event in pygame.event.get():
@@ -64,7 +64,7 @@ def paused(screen):
 
         myfont = pygame.font.SysFont('', 150)
         PAUSE = myfont.render('Paused', False, WHITE)
-        screen.blit(PAUSE, (SCREEN_SIZE // 2 - 200, SCREEN_SIZE // 2 - 75))
+        screen.blit(PAUSE, (SCREEN_WIDTH // 2 - 200, SCREEN_HEIGTH // 2 - 75))
         pygame.display.update()
 
         for event in pygame.event.get():
@@ -106,25 +106,6 @@ def main(argv):
     score = 0
     best_score = score
 
-    # Load Music
-    playlist = []
-    playlist.append('music/cake.mp3')
-    playlist.append('music/daftpunk.mp3')
-    playlist.append('music/darude.mp3')
-    playlist.append('music/eminem.mp3')
-    playlist.append('music/feelgood.mp3')
-    playlist.append('music/fox.mp3')
-    playlist.append('music/mchammer.mp3')
-    playlist.append('music/pumpedup.mp3')
-    playlist.append('music/spectre.mp3')
-    random.shuffle(playlist)
-
-    pygame.mixer.init()
-    pygame.mixer.music.load(playlist.pop())
-    for song in playlist:
-        pygame.mixer.music.queue(song)
-    pygame.mixer.music.play()
-
     while True:
         # Game initalization
         screen = initalize_display(argv)
@@ -132,14 +113,17 @@ def main(argv):
         pygame.event.set_allowed([QUIT, KEYDOWN, KEYUP, JOYBUTTONDOWN, JOYBUTTONUP, JOYHATMOTION])
         clock = pygame.time.Clock()
         kiko = Kiko(PLAYER_SIZE, RED)
-        grid_x = SCREEN_SIZE // SCALE_FACTOR
-        grid_y = SCREEN_SIZE // SCALE_FACTOR
-        maze = Maze(SCREEN_SIZE // grid_x, grid_x, grid_y)
+        grid_x = SCREEN_WIDTH // SCALE_FACTOR
+        grid_y = SCREEN_WIDTH // SCALE_FACTOR
+        maze = Maze(SCREEN_WIDTH // grid_x, grid_x, grid_y)
         grid = maze.empty_grid()
         first_grid_line = ''
         maze.renew_grid()
         speed = MAZE_SPEED
         continue_game = True
+
+        # Restart Maze Colors
+        maze.restart_colors()
 
         # Start Joystick
         joystick_count = pygame.joystick.get_count()
@@ -147,6 +131,25 @@ def main(argv):
         for i in range(joystick_count):
             joystick = pygame.joystick.Joystick(i)
             joystick.init()
+
+        # Load Music
+        playlist = []
+        playlist.append('music/cake.mp3')
+        playlist.append('music/darude.mp3')
+        playlist.append('music/eminem.mp3')
+        playlist.append('music/feelgood.mp3')
+        playlist.append('music/fox.mp3')
+        playlist.append('music/mchammer.mp3')
+
+        # Shuffle the playlist
+        random.shuffle(playlist)
+
+        # Plays the music
+        pygame.mixer.init()
+        pygame.mixer.music.load(playlist.pop())
+        for song in playlist:
+            pygame.mixer.music.queue(song)
+        pygame.mixer.music.play()
 
         # Runs the intro
         game_intro(screen, best_score)
@@ -286,7 +289,7 @@ def main(argv):
             screen.blit(wasd_hud, (0, 20))
             xbox_hud = pygame.image.load('images/xbox_hud.png').convert_alpha()
             xbox_hud.fill((255, 255, 255, 190), None, pygame.BLEND_RGBA_MULT)
-            screen.blit(xbox_hud, (SCREEN_SIZE - 100, 20))
+            screen.blit(xbox_hud, (SCREEN_WIDTH - 100, 20))
 
             # Update the display
             pygame.display.update()
