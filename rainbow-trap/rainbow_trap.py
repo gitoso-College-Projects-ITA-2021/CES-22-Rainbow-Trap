@@ -241,7 +241,16 @@ def main(argv):
             # Add kiko to the screen
             screen.blit(kiko.skin, kiko.pos)
 
+            # Print the Score
             screen.blit(SCORE, (0, 0))
+
+            # Print the HUD
+            wasd_hud = pygame.image.load('images/wasd_hud.png').convert_alpha()
+            wasd_hud.fill((255, 255, 255, 190), None, pygame.BLEND_RGBA_MULT)
+            screen.blit(wasd_hud, (0, 20))
+            xbox_hud = pygame.image.load('images/xbox_hud.png').convert_alpha()
+            xbox_hud.fill((255, 255, 255, 190), None, pygame.BLEND_RGBA_MULT)
+            screen.blit(xbox_hud, (SCREEN_SIZE - 100, 20))
 
             # Update the display
             pygame.display.update()
