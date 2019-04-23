@@ -78,6 +78,16 @@ def difficulty_update(score, maze, speed):
         maze.add_color()
     if((score // SCORE_LEVEL) == 4 and len(maze.colors) == 3):
         maze.add_color()
+    
+    # Change speed
+    if((score // SCORE_LEVEL) == 1 and speed == MAZE_SPEED):
+        speed = speed + 1
+    if((score // SCORE_LEVEL) == 3 and speed == MAZE_SPEED + 1):
+        speed = speed + 1
+    if((score // SCORE_LEVEL) == 5 and speed == MAZE_SPEED + 2):
+        speed = speed + 1
+    if((score // SCORE_LEVEL) == 6 and speed == MAZE_SPEED + 3):
+        speed = speed + 1
 
 
 # Main game flow
