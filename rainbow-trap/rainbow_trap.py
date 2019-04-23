@@ -67,8 +67,6 @@ def paused(screen):
             if event.type == KEYDOWN:
                 if event.key == K_RETURN:
                     pause = False
-                
-        pygame.display.update()
 
 
 # Main game flow
@@ -85,6 +83,7 @@ def main(argv):
     first_grid_line = ''
     maze.renew_grid()
     continue_game = True
+    score = 0
 
     # Runs the intro
     game_intro(screen)
@@ -93,6 +92,11 @@ def main(argv):
     while True:
         # Sets FPS to 60
         clock.tick(60)
+
+        # Score iterating
+        score = score + 1
+        myfont1 = pygame.font.SysFont('', 50)
+        SCORE = myfont1.render('Score '+str(score), True, WHITE)
 
         # Event handling
         for event in pygame.event.get():
@@ -189,6 +193,8 @@ def main(argv):
 
         # Add kiko to the screen
         screen.blit(kiko.skin, kiko.pos)
+
+        screen.blit(SCORE, (0, 0))
 
         # Update the display
         pygame.display.update()
