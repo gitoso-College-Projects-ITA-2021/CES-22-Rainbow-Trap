@@ -74,6 +74,9 @@ def paused(screen):
             if event.type == KEYDOWN:
                 if event.key == K_RETURN:
                     pause = False
+            if event.type == JOYBUTTONDOWN:
+                if event.button == B_START:
+                    pause = False
 
 
 # Main game flow
@@ -163,6 +166,8 @@ def main(argv):
                 if event.type == JOYBUTTONDOWN:
                     if event.button in [0, 1, 2, 3]:
                         kiko.choose_color()
+                    elif event.button == B_START:
+                            paused(screen)
 
             # Move the player
             kiko.moving()
