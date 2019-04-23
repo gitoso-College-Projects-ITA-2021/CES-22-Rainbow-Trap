@@ -89,7 +89,6 @@ def main(argv):
         screen = initalize_display(argv)
         pygame.joystick.init()
         pygame.event.set_allowed([QUIT, KEYDOWN, KEYUP, JOYBUTTONDOWN, JOYBUTTONUP, JOYHATMOTION])
-        pygame.event.set_allowed([QUIT, KEYDOWN, KEYUP])
         clock = pygame.time.Clock()
         kiko = Kiko(PLAYER_SIZE, RED)
         grid_x = SCREEN_SIZE // SCALE_FACTOR

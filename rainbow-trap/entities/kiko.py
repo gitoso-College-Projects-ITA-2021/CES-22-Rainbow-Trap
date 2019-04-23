@@ -32,24 +32,48 @@ class Kiko(pygame.sprite.Sprite):
         self.rect = pygame.Rect(self.pos, (self.size, self.size))
 
     def choose_color(self):
-        if pygame.key.get_pressed()[K_a] or pygame.joystick.Joystick(0).get_button(B_X):
-            if pygame.key.get_pressed()[K_w] or pygame.joystick.Joystick(0).get_button(B_Y):
+        if pygame.key.get_pressed()[K_a]:
+            if pygame.key.get_pressed()[K_w]:
                 self.change_color(VIOLET)
-            elif pygame.key.get_pressed()[K_s] or pygame.joystick.Joystick(0).get_button(B_A):
+            elif pygame.key.get_pressed()[K_s]:
                 self.change_color(INDIGO)
             else:
                 self.change_color(BLUE)
-        elif pygame.key.get_pressed()[K_d] or pygame.joystick.Joystick(0).get_button(B_B):
-            if pygame.key.get_pressed()[K_w] or pygame.joystick.Joystick(0).get_button(B_Y):
+        elif pygame.key.get_pressed()[K_d]:
+            if pygame.key.get_pressed()[K_w]:
                 self.change_color(ORANGE)
-            elif pygame.key.get_pressed()[K_s] or pygame.joystick.Joystick(0).get_button(B_A):
+            elif pygame.key.get_pressed()[K_s]:
                 self.change_color(WHITE)
             else:
                 self.change_color(RED)
-        elif pygame.key.get_pressed()[K_w] or pygame.joystick.Joystick(0).get_button(B_Y):
+        elif pygame.key.get_pressed()[K_w]:
             self.change_color(YELLOW)
-        else:
+        elif pygame.key.get_pressed()[K_s]:
             self.change_color(GREEN)
+
+        joystick_count = pygame.joystick.get_count()
+
+        for i in range(joystick_count):
+            joystick = pygame.joystick.Joystick(i)
+            joystick.init()
+            if pygame.joystick.Joystick(i).get_button(B_X):
+                if pygame.joystick.Joystick(i).get_button(B_Y):
+                    self.change_color(VIOLET)
+                elif pygame.joystick.Joystick(i).get_button(B_A):
+                    self.change_color(INDIGO)
+                else:
+                    self.change_color(BLUE)
+            elif pygame.joystick.Joystick(i).get_button(B_B):
+                if pygame.joystick.Joystick(i).get_button(B_Y):
+                    self.change_color(ORANGE)
+                elif pygame.joystick.Joystick(i).get_button(B_A):
+                    self.change_color(WHITE)
+                else:
+                    self.change_color(RED)
+            elif pygame.joystick.Joystick(i).get_button(B_Y):
+                self.change_color(YELLOW)
+            elif pygame.joystick.Joystick(i).get_button(B_A):
+                self.change_color(GREEN)
 
     def change_color(self, color):
         self.color = color
