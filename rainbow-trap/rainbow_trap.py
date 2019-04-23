@@ -72,6 +72,14 @@ def paused(screen):
                     pause = False
 
 
+def difficulty_update(score, maze, speed):
+    # Add color
+    if((score // SCORE_LEVEL) == 2 and len(maze.colors) == 2):
+        maze.add_color()
+    if((score // SCORE_LEVEL) == 4 and len(maze.colors) == 3):
+        maze.add_color()
+
+
 # Main game flow
 def main(argv):
 
@@ -90,17 +98,22 @@ def main(argv):
         grid = maze.empty_grid()
         first_grid_line = ''
         maze.renew_grid()
+        speed = MAZE_SPEED
         continue_game = True
 
         # Runs the intro
         game_intro(screen, best_score)
         score = 0
+        difficulty_update(score, maze, speed)
         game = True
 
         # Main loop
         while game:
             # Sets FPS to 60
             clock.tick(60)
+
+            # Update difficulty
+            difficulty_update(score, maze, speed)
 
             # Score iterating
             score = score + 1
@@ -196,7 +209,7 @@ def main(argv):
                 count_y = count_y + maze.cell_size
 
             # Move the labyrinth up (remove first lines and repeat loop)
-            for i in range(MAZE_SPEED):
+            for i in range(speed):
                 if first_grid_line:
                     first_grid_line.pop(0)
 
