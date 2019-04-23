@@ -36,7 +36,7 @@ def game_intro(screen):
         myfont = pygame.font.SysFont('Ubuntu Mono', 150)
         myfont2 = pygame.font.SysFont('Comic Sans', 50)
         RT = myfont.render('Rainbow Trap', False, WHITE)
-        PS = myfont2.render('Press ENTER to play', False, WHITE)
+        PS = myfont2.render('Press ENTER or START to play', False, WHITE)
         screen.blit(RT, (200, SCREEN_SIZE // 2 - 100))
         screen.blit(PS, (200, SCREEN_SIZE // 2 + 100))
         pygame.display.update()
@@ -47,6 +47,9 @@ def game_intro(screen):
                 quit()
             if event.type == KEYDOWN:
                 if event.key == K_RETURN:
+                    intro = False
+            if event.type == JOYBUTTONDOWN:
+                if event.button == B_START:
                     intro = False
 
 
@@ -88,6 +91,14 @@ def main(argv):
     first_grid_line = ''
     maze.renew_grid()
 
+    # Start Joystick
+    joystick_count = pygame.joystick.get_count()
+
+    for i in range(joystick_count):
+        joystick = pygame.joystick.Joystick(i)
+        joystick.init()
+
+
     # # Load Music
     # pygame.mixer.init()
     # pygame.mixer.music.load('sample_music.mp3')
@@ -98,13 +109,6 @@ def main(argv):
 
     # Runs the intro
     game_intro(screen)
-
-    # Start Joystick
-    joystick_count = pygame.joystick.get_count()
-
-    for i in range(joystick_count):
-        joystick = pygame.joystick.Joystick(i)
-        joystick.init()
 
     # Main loop
     while True:
