@@ -9,12 +9,11 @@ from config import *
 # Import classes
 from entities.pool import Pool
 
-colors_pool = [RED, GREEN, BLUE, YELLOW]
-
 
 # Class for Maze generation
 class Maze:
     def __init__(self, cell_size, x_length, y_length):
+        self.colors_pool = [RED, GREEN, BLUE, YELLOW]
         self.cell_size = cell_size
         self.x_length = x_length
         self.y_length = y_length
@@ -23,15 +22,18 @@ class Maze:
         self.inv_count = INVALID_COUNT
         self.obst_count = OBSTACLES_COUNT
         self.grid = self.new_grid()
+    
+    def restart_colors(self):
+        self.colors_pool = [RED, GREEN, BLUE, YELLOW]
         
     def new_colors(self):
-        random_c_1 = colors_pool.pop(randint(0, len(colors_pool) - 1))
-        random_c_2 = colors_pool.pop(randint(0, len(colors_pool) - 1))
+        random_c_1 = self.colors_pool.pop(randint(0, len(self.colors_pool) - 1))
+        random_c_2 = self.colors_pool.pop(randint(0, len(self.colors_pool) - 1))
         return [random_c_1, random_c_2]
 
     def add_color(self):
-        if len(colors_pool) != 0:
-            self.colors.append(colors_pool.pop(randint(0, len(colors_pool) - 1)))
+        if len(self.colors_pool) != 0:
+            self.colors.append(self.colors_pool.pop(randint(0, len(self.colors_pool) - 1)))
 
     def new_grid(self):
         # Empty and avaiable grid
