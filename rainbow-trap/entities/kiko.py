@@ -2,12 +2,15 @@
 import pygame
 from pygame.locals import *
 
+# Import Singleton class
+from entities.singleton import Singleton
+
 # Import local settings
 from config import *
 
 
 # Class for Main Character
-class Kiko(pygame.sprite.Sprite):
+class Kiko(pygame.sprite.Sprite, metaclass=Singleton):
     def __init__(self, size, color):
         pygame.sprite.Sprite.__init__(self)
         self.color = color
