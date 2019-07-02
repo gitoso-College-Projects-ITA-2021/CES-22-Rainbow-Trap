@@ -12,6 +12,7 @@ from entities.pool import Pool
 
 # Class for Maze generation
 class Maze:
+    __instance = None
     def __init__(self, cell_size=0, x_length=0, y_length=0):
         self.colors_pool = [RED, GREEN, BLUE, YELLOW]
         self.cell_size = cell_size
@@ -22,6 +23,10 @@ class Maze:
         self.inv_count = INVALID_COUNT
         self.obst_count = OBSTACLES_COUNT
         self.grid = self.new_grid()
+        if Maze.__instance != None:
+            raise Exception("This class must is a Singleton")
+        else:
+            Maze.__instance = self
     
     def restart_colors(self):
         self.colors_pool = [RED, GREEN, BLUE, YELLOW]
