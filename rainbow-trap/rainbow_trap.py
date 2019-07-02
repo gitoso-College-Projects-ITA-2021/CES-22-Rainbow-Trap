@@ -15,6 +15,7 @@ from config import *
 from entities.kiko import Kiko
 from entities.maze import *
 from entities.controller import Controller
+from entities.imageAdapter import ImageAdapter
 
 
 # Initialize game display
@@ -258,16 +259,12 @@ def main(argv):
                     if cell.state == WALL:
                         image_name = 'images/' + ''.join(cell.neighbors) + '_' + cell.get_color_string() + '.png'
                         if os.path.isfile(image_name):
-                            image = pygame.image.load(image_name).convert_alpha()
-                        else:
-                            # Dummy image for things that are not done
-                            image = pygame.image.load('images/4.png').convert_alpha()
-
+                            image = ImageAdapter(image_name)
                         if cell.color != kiko.color:
                             walls.append(pygame.Rect(((count_x, count_y)), (maze.cell_size, maze.cell_size)))
                         else:
-                            image.fill((255, 255, 255, WALL_OPACITY), None, pygame.BLEND_RGBA_MULT)
-                        screen.blit(image, (count_x, count_y))
+                            image.setOpacity(WALL_OPACITY)
+                        image.blit(screen, (count_x, count_y))
                     count_x = count_x + maze.cell_size
                 count_y = count_y + maze.cell_size
 
@@ -284,12 +281,19 @@ def main(argv):
             screen.blit(LEVEL, (300, 0))
 
             # Print the HUD
-            wasd_hud = pygame.image.load('images/wasd_hud.png').convert_alpha()
-            wasd_hud.fill((255, 255, 255, 190), None, pygame.BLEND_RGBA_MULT)
-            screen.blit(wasd_hud, (0, 20))
-            xbox_hud = pygame.image.load('images/xbox_hud.png').convert_alpha()
-            xbox_hud.fill((255, 255, 255, 190), None, pygame.BLEND_RGBA_MULT)
-            screen.blit(xbox_hud, (SCREEN_WIDTH - 100, 20))
+            # wasd_hud = pygame.image.load('images/wasd_hud.png').convert_alpha()
+            # wasd_hud.fill((255, 255, 255, 190), None, pygame.BLEND_RGBA_MULT)
+            # screen.blit(wasd_hud, (0, 20))
+            wasd_hud = ImageAdapter('images/wasd_hud.png')
+            wasd_hud.setOpacity(190)
+            wasd_hud.blit(screen, (0, 20))
+
+            # xbox_hud = pygame.image.load('images/xbox_hud.png').convert_alpha()
+            # xbox_hud.fill((255, 255, 255, 190), None, pygame.BLEND_RGBA_MULT)
+            # screen.blit(xbox_hud, (SCREEN_WIDTH - 100, 20))
+            xbox_hud = ImageAdapter('images/xbox_hud.png')
+            xbox_hud.setOpacity(190)
+            xbox_hud.blit(screen, (SCREEN_WIDTH - 100, 20))
 
             # Update the display
             pygame.display.update()
