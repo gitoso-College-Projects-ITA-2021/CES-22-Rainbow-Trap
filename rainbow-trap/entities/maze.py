@@ -12,7 +12,7 @@ from entities.pool import Pool
 
 # Class for Maze generation
 class Maze:
-    def __init__(self, cell_size, x_length, y_length):
+    def __init__(self, cell_size=0, x_length=0, y_length=0):
         self.colors_pool = [RED, GREEN, BLUE, YELLOW]
         self.cell_size = cell_size
         self.x_length = x_length

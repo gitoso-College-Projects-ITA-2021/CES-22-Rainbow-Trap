@@ -17,6 +17,104 @@ from entities.maze import *
 from entities.controller import Controller
 
 
+class Joystick():
+    def __init__(self):
+        pass
+    
+    def start(self):
+        pygame.joystick.init()
+        joystick_count = pygame.joystick.get_count()
+
+        for i in range(joystick_count):
+            joystick = pygame.joystick.Joystick(i)
+            joystick.init()
+
+
+class Screen():
+    def __init__(self):
+        pass
+    
+    def start_screen(self, argv):
+        screen = initalize_display(argv)
+
+        return screen
+
+    def start_maze(self):
+        
+        self.config()
+        pygame.event.set_allowed([QUIT, KEYDOWN, KEYUP, JOYBUTTONDOWN, JOYBUTTONUP, JOYHATMOTION])
+        kiko = Kiko(PLAYER_SIZE, RED)
+        grid_x = SCREEN_WIDTH // SCALE_FACTOR
+        grid_y = SCREEN_WIDTH // SCALE_FACTOR
+        maze = Maze(SCREEN_WIDTH // grid_x, grid_x, grid_y)
+        grid = maze.empty_grid()
+        first_grid_line = ''
+        maze.renew_grid()
+        maze.restart_colors()
+
+        return maze
+    
+    def config(self):
+        clock = pygame.time.Clock()
+        speed = MAZE_SPEED
+        continue_game = True
+        
+
+class Music():
+    def __init(self):
+        pass
+    
+    def play(self):
+        playlist = []
+        playlist.append('music/cake.mp3')
+        playlist.append('music/darude.mp3')
+        playlist.append('music/eminem.mp3')
+        playlist.append('music/feelgood.mp3')
+        playlist.append('music/fox.mp3')
+        playlist.append('music/mchammer.mp3')
+
+        # Shuffle the playlist
+        random.shuffle(playlist)
+
+        # Plays the music
+        pygame.mixer.init()
+        pygame.mixer.music.load(playlist.pop())
+        for song in playlist:
+            pygame.mixer.music.queue(song)
+        pygame.mixer.music.play()
+
+
+class EventManager():
+    def __init__(self):
+        pass
+    
+    def setGameUp(self, maze, argv, scr):
+
+        # Inicializes screen and its objects
+        self.screen = Screen()
+        scr = self.screen.start_screen(argv=argv)
+        maze = self.screen.start_maze()
+
+        # Sets the joystick up
+        self.joystick = Joystick()
+        self.joystick.start()
+
+        # Loads and plays the game music
+        self.music = Music()
+        self.music.play()
+
+
+class Game():
+    def __init__(self, argv):
+        self.screen = None
+        self.maze = Maze()
+        self.argv = argv
+    
+    def askEventManager(self):
+        em = EventManager()
+        em.setGameUp(maze=self.maze, argv=self.argv, scr=self.screen)
+
+
 # Initialize game display
 def initalize_display(argv):
     pygame.init()
@@ -108,64 +206,67 @@ def main(argv):
 
     while True:
         # Game initalization
-        screen = initalize_display(argv)
-        pygame.joystick.init()
-        pygame.event.set_allowed([QUIT, KEYDOWN, KEYUP, JOYBUTTONDOWN, JOYBUTTONUP, JOYHATMOTION])
-        clock = pygame.time.Clock()
-        kiko = Kiko(PLAYER_SIZE, RED)
-        grid_x = SCREEN_WIDTH // SCALE_FACTOR
-        grid_y = SCREEN_WIDTH // SCALE_FACTOR
-        maze = Maze(SCREEN_WIDTH // grid_x, grid_x, grid_y)
-        grid = maze.empty_grid()
-        first_grid_line = ''
-        maze.renew_grid()
-        speed = MAZE_SPEED
-        continue_game = True
+        # screen = initalize_display(argv)
+        # pygame.joystick.init()
+        # pygame.event.set_allowed([QUIT, KEYDOWN, KEYUP, JOYBUTTONDOWN, JOYBUTTONUP, JOYHATMOTION])
+        # clock = pygame.time.Clock()
+        # kiko = Kiko(PLAYER_SIZE, RED)
+        # grid_x = SCREEN_WIDTH // SCALE_FACTOR
+        # grid_y = SCREEN_WIDTH // SCALE_FACTOR
+        # maze = Maze(SCREEN_WIDTH // grid_x, grid_x, grid_y)
+        # grid = maze.empty_grid()
+        # first_grid_line = ''
+        # maze.renew_grid()
+        # speed = MAZE_SPEED
+        # continue_game = True
 
-        # Restart Maze Colors
-        maze.restart_colors()
+        # # Restart Maze Colors
+        # maze.restart_colors()
 
-        # Start Joystick
-        joystick_count = pygame.joystick.get_count()
+        # # Start Joystick
+        # joystick_count = pygame.joystick.get_count()
 
-        for i in range(joystick_count):
-            joystick = pygame.joystick.Joystick(i)
-            joystick.init()
+        # for i in range(joystick_count):
+        #     joystick = pygame.joystick.Joystick(i)
+        #     joystick.init()
 
-        # Load Music
-        playlist = []
-        playlist.append('music/cake.mp3')
-        playlist.append('music/darude.mp3')
-        playlist.append('music/eminem.mp3')
-        playlist.append('music/feelgood.mp3')
-        playlist.append('music/fox.mp3')
-        playlist.append('music/mchammer.mp3')
+        # # Load Music
+        # playlist = []
+        # playlist.append('music/cake.mp3')
+        # playlist.append('music/darude.mp3')
+        # playlist.append('music/eminem.mp3')
+        # playlist.append('music/feelgood.mp3')
+        # playlist.append('music/fox.mp3')
+        # playlist.append('music/mchammer.mp3')
 
-        # Shuffle the playlist
-        random.shuffle(playlist)
+        # # Shuffle the playlist
+        # random.shuffle(playlist)
 
-        # Plays the music
-        pygame.mixer.init()
-        pygame.mixer.music.load(playlist.pop())
-        for song in playlist:
-            pygame.mixer.music.queue(song)
-        pygame.mixer.music.play()
+        # # Plays the music
+        # pygame.mixer.init()
+        # pygame.mixer.music.load(playlist.pop())
+        # for song in playlist:
+        #     pygame.mixer.music.queue(song)
+        # pygame.mixer.music.play()
+
+        g = Game(argv)
+        g.askEventManager()
 
         # Runs the intro
-        game_intro(screen, best_score)
+        game_intro(g.screen, best_score)
         score = 0
-        difficulty_update(score, maze)
-        game = True
+        difficulty_update(score, g.maze)
+        game_on = True
 
         # Main loop
-        while game:
+        while game_on:
             # Sets FPS to 60
             clock.tick(60)
 
             # Update difficulty
-            difficulty_update(score, maze)
+            difficulty_update(score, g.maze)
             level = score // SCORE_LEVEL
-            speed = MAZE_SPEED + level - len(maze.colors) + 2
+            speed = MAZE_SPEED + level - len(g.maze.colors) + 2
             if(speed > MAX_MAZE_SPEED):
                 speed = MAX_MAZE_SPEED
 
@@ -192,7 +293,7 @@ def main(argv):
                     elif event.key in [K_a, K_w, K_s, K_d]:
                         kiko.choose_color()
                     elif event.key == pygame.K_p:
-                        paused(screen)
+                        paused(g.screen)
 
                 # Event: Key rekeased
                 if event.type == KEYUP:
@@ -218,7 +319,7 @@ def main(argv):
                     if event.button in [0, 1, 2, 3]:
                         kiko.choose_color()
                     elif event.button == B_START:
-                            paused(screen)
+                            paused(g.screen)
 
             # Move the player
             kiko.moving()
@@ -226,24 +327,24 @@ def main(argv):
             # Update and move the maze
 
             # Clear the screen
-            screen.fill(BLACK)
+            g.screen.fill(BLACK)
 
             # Renew top lines if needed
             if not first_grid_line:
-                first_grid_line = maze.convert_to_full_grid(grid[0])
+                first_grid_line = g.maze.convert_to_full_grid(grid[0])
                 grid.pop(0)
-                grid.append(maze.get_line())
+                grid.append(g.maze.get_line())
 
             # Draw top lines of the maze (out of screen)
-            count_y = -maze.cell_size
+            count_y = -g.maze.cell_size
             for line in first_grid_line:
                 count_x = 0
                 for cell in line:
-                    maze_skin = pygame.Surface((maze.cell_size, 1))
+                    maze_skin = pygame.Surface((g.maze.cell_size, 1))
                     maze_skin.fill(RED)
                     if cell.state == WALL:
-                        screen.blit(maze_skin, (count_x, count_y))
-                    count_x = count_x + maze.cell_size
+                        g.screen.blit(g.maze, (count_x, count_y))
+                    count_x = count_x + g.maze.cell_size
                 count_y = count_y + 1
 
             # Array that saves maze walls (for collision purposes)
@@ -253,7 +354,7 @@ def main(argv):
             for line in grid:
                 count_x = 0
                 for cell in line:
-                    maze_skin = pygame.Surface((maze.cell_size, maze.cell_size))
+                    maze_skin = pygame.Surface((g.maze.cell_size, g.maze.cell_size))
                     maze_skin.fill(cell.color)
                     if cell.state == WALL:
                         image_name = 'images/' + ''.join(cell.neighbors) + '_' + cell.get_color_string() + '.png'
@@ -264,12 +365,12 @@ def main(argv):
                             image = pygame.image.load('images/4.png').convert_alpha()
 
                         if cell.color != kiko.color:
-                            walls.append(pygame.Rect(((count_x, count_y)), (maze.cell_size, maze.cell_size)))
+                            walls.append(pygame.Rect(((count_x, count_y)), (g.maze.cell_size, g.maze.cell_size)))
                         else:
                             image.fill((255, 255, 255, WALL_OPACITY), None, pygame.BLEND_RGBA_MULT)
-                        screen.blit(image, (count_x, count_y))
-                    count_x = count_x + maze.cell_size
-                count_y = count_y + maze.cell_size
+                        g.screen.blit(image, (count_x, count_y))
+                    count_x = count_x + g.maze.cell_size
+                count_y = count_y + g.maze.cell_size
 
             # Move the labyrinth up (remove first lines and repeat loop)
             for i in range(speed):
@@ -277,19 +378,19 @@ def main(argv):
                     first_grid_line.pop(0)
 
             # Add kiko to the screen
-            screen.blit(kiko.skin, kiko.pos)
+            g.screen.blit(kiko.skin, kiko.pos)
 
             # Print the Score
-            screen.blit(SCORE, (0, 0))
-            screen.blit(LEVEL, (300, 0))
+            g.screen.blit(SCORE, (0, 0))
+            g.screen.blit(LEVEL, (300, 0))
 
             # Print the HUD
             wasd_hud = pygame.image.load('images/wasd_hud.png').convert_alpha()
             wasd_hud.fill((255, 255, 255, 190), None, pygame.BLEND_RGBA_MULT)
-            screen.blit(wasd_hud, (0, 20))
+            g.screen.blit(wasd_hud, (0, 20))
             xbox_hud = pygame.image.load('images/xbox_hud.png').convert_alpha()
             xbox_hud.fill((255, 255, 255, 190), None, pygame.BLEND_RGBA_MULT)
-            screen.blit(xbox_hud, (SCREEN_WIDTH - 100, 20))
+            g.screen.blit(xbox_hud, (SCREEN_WIDTH - 100, 20))
 
             # Update the display
             pygame.display.update()
@@ -299,7 +400,7 @@ def main(argv):
                 if kiko.rect.colliderect(wall):
                     if score >= best_score:
                         best_score = score
-                    game = False
+                    game_on = False
 
 # Calls main function if executed as a script
 if __name__ == '__main__':
